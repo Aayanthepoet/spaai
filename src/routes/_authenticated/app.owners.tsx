@@ -1,17 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { listOwners, listOwnerContacts, runSkipTrace } from "@/lib/skiptrace/skiptrace.functions";
+import { listOwners, listOwnerContacts } from "@/lib/owners/owners.functions";
 import { logAuditEvent } from "@/lib/audit/audit.functions";
-import { Search, ChevronDown, ChevronRight, Phone, Mail, Users, Loader2, CheckCircle2, AlertCircle, X, Download } from "lucide-react";
-import { SkipTraceBadge } from "@/components/app/SkipTraceBadge";
+import { ChevronDown, ChevronRight, Phone, Mail, Users, Loader2, Download } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/owners")({
   head: () => ({ meta: [{ title: "Owners — PropAI" }] }),
-  validateSearch: (search: Record<string, unknown>) => ({
-    status: search.status === "pending" || search.status === "traced" ? search.status : undefined,
-  }),
   component: OwnersPage,
   errorComponent: ({ error }) => <div className="p-6 text-red-400">{error.message}</div>,
   notFoundComponent: () => <div className="p-6">Not found.</div>,
@@ -25,24 +21,12 @@ type Owner = {
   mailing_state: string | null;
   mailing_zip: string | null;
   contact_count: number;
-  skip_trace_status?: string | null;
-  skip_trace_last_run_at?: string | null;
   properties: { address: string } | { address: string }[] | null;
 };
-
-type BulkProgress = {
-  status: "queued" | "running" | "done" | "error";
-  inserted?: number;
-  outcome?: string; // 'traced' | 'no_hit'
-  message?: string;
-};
-
-const BULK_CONCURRENCY = 3;
 
 function OwnersPage() {
   const fetchOwners = useServerFn(listOwners);
   const qc = useQueryClient();
-  const traceFn = useServerFn(runSkipTrace);
   const fetchContacts = useServerFn(listOwnerContacts);
 
   const { data: owners, isLoading } = useQuery({
@@ -51,27 +35,11 @@ function OwnersPage() {
   });
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [progress, setProgress] = useState<Record<string, BulkProgress>>({});
-  const [bulkRunning, setBulkRunning] = useState(false);
   const [exporting, setExporting] = useState(false);
 
-  const { status: statusFilter } = Route.useSearch();
-  const navigate = Route.useNavigate();
-  const allOwners = owners ?? [];
-  const ownerList = useMemo(() => {
-    if (!statusFilter) return allOwners;
-    return allOwners.filter((o) => {
-      const s = (o.skip_trace_status ?? "pending") === "traced" ? "traced" : "pending";
-      return s === statusFilter;
-    });
-  }, [allOwners, statusFilter]);
+  const ownerList = owners ?? [];
   const allSelected = ownerList.length > 0 && ownerList.every((o) => selected.has(o.id));
   const someSelected = selected.size > 0 && !allSelected;
-
-  const pendingIds = useMemo(
-    () => ownerList.filter((o) => (o.skip_trace_status ?? "pending") !== "traced").map((o) => o.id),
-    [ownerList],
-  );
 
   const toggleOne = (id: string) =>
     setSelected((prev) => {
@@ -83,37 +51,6 @@ function OwnersPage() {
 
   const toggleAll = () =>
     setSelected((prev) => (prev.size === ownerList.length ? new Set() : new Set(ownerList.map((o) => o.id))));
-
-  async function runBulk(ids: string[]) {
-    if (bulkRunning || ids.length === 0) return;
-    setBulkRunning(true);
-    const init: Record<string, BulkProgress> = {};
-    for (const id of ids) init[id] = { status: "queued" };
-    setProgress((p) => ({ ...p, ...init }));
-
-    const queue = [...ids];
-    const workers = Array.from({ length: Math.min(BULK_CONCURRENCY, queue.length) }, async () => {
-      while (queue.length) {
-        const id = queue.shift()!;
-        setProgress((p) => ({ ...p, [id]: { status: "running" } }));
-        try {
-          const res = (await traceFn({ data: { owner_id: id } })) as {
-            inserted: number; status: string;
-          };
-          setProgress((p) => ({
-            ...p,
-            [id]: { status: "done", inserted: res.inserted, outcome: res.status },
-          }));
-          qc.invalidateQueries({ queryKey: ["owner-contacts", id] });
-        } catch (e) {
-          setProgress((p) => ({ ...p, [id]: { status: "error", message: (e as Error).message } }));
-        }
-      }
-    });
-    await Promise.all(workers);
-    qc.invalidateQueries({ queryKey: ["owners"] });
-    setBulkRunning(false);
-  }
 
   async function exportContacts(ids: string[]) {
     if (exporting || ids.length === 0) return;
@@ -129,8 +66,7 @@ function OwnersPage() {
 
       const csvRows: string[][] = [[
         "owner_id", "owner_name", "entity_type",
-        "contact_type", "value", "confidence", "is_verified",
-        "skip_trace_status", "skip_trace_last_run_at", "notes",
+        "contact_type", "value", "confidence", "is_verified", "notes",
       ]];
       let count = 0;
       for (const { id, rows } of results) {
@@ -147,8 +83,6 @@ function OwnersPage() {
             c.value,
             c.confidence != null ? String(c.confidence) : "",
             c.is_verified ? "true" : "false",
-            o.skip_trace_status ?? "pending",
-            o.skip_trace_last_run_at ?? "",
             c.notes ?? "",
           ]);
           count++;
@@ -168,7 +102,7 @@ function OwnersPage() {
         .join("\r\n");
 
       const filename = `owner-contacts-${new Date().toISOString().slice(0, 10)}.csv`;
-      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+      const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -205,55 +139,16 @@ function OwnersPage() {
     }
   }
 
-  const bulkStats = useMemo(() => {
-    const entries = Object.values(progress);
-    return {
-      total: entries.length,
-      done: entries.filter((e) => e.status === "done").length,
-      running: entries.filter((e) => e.status === "running").length,
-      queued: entries.filter((e) => e.status === "queued").length,
-      errors: entries.filter((e) => e.status === "error").length,
-    };
-  }, [progress]);
-
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="h-display text-[clamp(28px,4vw,44px)]">Owners</h1>
           <p className="text-[var(--w55)] text-sm mt-1">
-            People and entities behind your saved properties. Run skip trace to surface phones, emails, and relatives.
+            People and entities behind your saved properties, and their known contacts.
           </p>
-          {statusFilter && (
-            <div className="mt-2 inline-flex items-center gap-2 text-xs rounded-full border border-cyan/40 bg-cyan/10 text-cyan px-2.5 py-1">
-              Showing {statusFilter} owners
-              <button
-                onClick={() => navigate({ search: { status: undefined } })}
-                className="hover:text-white"
-                aria-label="Clear filter"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </div>
-          )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => runBulk(pendingIds)}
-            disabled={bulkRunning || pendingIds.length === 0}
-            className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-xs hover:bg-white/5 disabled:opacity-50"
-          >
-            <Search className="h-3.5 w-3.5 text-cyan" />
-            Trace all pending ({pendingIds.length})
-          </button>
-          <button
-            onClick={() => runBulk(Array.from(selected))}
-            disabled={bulkRunning || selected.size === 0}
-            className="inline-flex items-center gap-1.5 rounded-md bg-cyan text-black px-3 py-2 text-xs font-medium hover:bg-cyan/90 disabled:opacity-50 disabled:bg-cyan/40"
-          >
-            {bulkRunning ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Search className="h-3.5 w-3.5" />}
-            Skip trace selected ({selected.size})
-          </button>
           <button
             onClick={() => exportContacts(Array.from(selected))}
             disabled={exporting || selected.size === 0}
@@ -265,14 +160,6 @@ function OwnersPage() {
           </button>
         </div>
       </header>
-
-      {bulkStats.total > 0 && (
-        <BulkProgressBar
-          stats={bulkStats}
-          running={bulkRunning}
-          onClear={() => setProgress({})}
-        />
-      )}
 
       {isLoading && <p className="text-[var(--w55)] text-sm">Loading…</p>}
 
@@ -300,11 +187,9 @@ function OwnersPage() {
                 </th>
                 <th className="p-4 w-8"></th>
                 <th className="p-4">Owner</th>
-                <th className="p-4">Skip trace</th>
                 <th className="p-4">Property</th>
                 <th className="p-4">Mailing</th>
                 <th className="p-4">Contacts</th>
-                <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -314,7 +199,6 @@ function OwnersPage() {
                   owner={o}
                   selected={selected.has(o.id)}
                   onToggle={() => toggleOne(o.id)}
-                  bulk={progress[o.id]}
                 />
               ))}
             </tbody>
@@ -325,64 +209,16 @@ function OwnersPage() {
   );
 }
 
-function BulkProgressBar({
-  stats,
-  running,
-  onClear,
-}: {
-  stats: { total: number; done: number; running: number; queued: number; errors: number };
-  running: boolean;
-  onClear: () => void;
-}) {
-  const completed = stats.done + stats.errors;
-  const pct = stats.total === 0 ? 0 : Math.round((completed / stats.total) * 100);
-  return (
-    <div className="surface p-4 space-y-2">
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-2 text-sm">
-          {running ? (
-            <Loader2 className="h-4 w-4 animate-spin text-cyan" />
-          ) : (
-            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-          )}
-          <span className="font-medium">
-            {running ? "Skip tracing in progress" : "Skip trace complete"}
-          </span>
-          <span className="text-[var(--w55)] text-xs">
-            {completed} / {stats.total} owners
-            {stats.errors > 0 && <span className="text-red-400"> · {stats.errors} failed</span>}
-          </span>
-        </div>
-        {!running && (
-          <button onClick={onClear} className="text-[var(--w55)] hover:text-white text-xs inline-flex items-center gap-1">
-            <X className="h-3 w-3" /> Clear
-          </button>
-        )}
-      </div>
-      <div className="h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
-        <div
-          className="h-full bg-cyan transition-[width] duration-300"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
 function OwnerRow({
   owner,
   selected,
   onToggle,
-  bulk,
 }: {
   owner: Owner;
   selected: boolean;
   onToggle: () => void;
-  bulk: BulkProgress | undefined;
 }) {
-  const qc = useQueryClient();
   const [open, setOpen] = useState(false);
-  const traceFn = useServerFn(runSkipTrace);
   const fetchContacts = useServerFn(listOwnerContacts);
 
   const { data: contacts, isLoading } = useQuery({
@@ -391,17 +227,7 @@ function OwnerRow({
     enabled: open,
   });
 
-  const mut = useMutation({
-    mutationFn: () => traceFn({ data: { owner_id: owner.id } }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["owner-contacts", owner.id] });
-      qc.invalidateQueries({ queryKey: ["owners"] });
-      setOpen(true);
-    },
-  });
-
   const prop = Array.isArray(owner.properties) ? owner.properties[0] : owner.properties;
-  const isBulkBusy = bulk?.status === "queued" || bulk?.status === "running";
 
   return (
     <>
@@ -424,12 +250,6 @@ function OwnerRow({
           <div className="font-medium">{owner.full_name}</div>
           {owner.entity_type && <div className="text-[10px] uppercase tracking-wider text-[var(--w55)] mt-0.5">{owner.entity_type}</div>}
         </td>
-        <td className="p-4">
-          <div className="flex flex-col gap-1">
-            <SkipTraceBadge status={owner.skip_trace_status} lastRunAt={owner.skip_trace_last_run_at} />
-            {bulk && <BulkRowIndicator bulk={bulk} />}
-          </div>
-        </td>
         <td className="p-4 text-[var(--w55)]">{prop?.address ?? "—"}</td>
         <td className="p-4 text-[var(--w55)]">
           {[owner.mailing_city, owner.mailing_state, owner.mailing_zip].filter(Boolean).join(", ") || "—"}
@@ -437,24 +257,13 @@ function OwnerRow({
         <td className="p-4">
           <span className="text-cyan">{owner.contact_count}</span>
         </td>
-        <td className="p-4 text-right">
-          <button
-            onClick={() => mut.mutate()}
-            disabled={mut.isPending || isBulkBusy}
-            className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs hover:bg-white/5 disabled:opacity-50"
-          >
-            <Search className="h-3.5 w-3.5 text-cyan" />
-            {mut.isPending || isBulkBusy ? "Tracing…" : owner.skip_trace_status === "traced" ? "Re-trace" : "Skip trace"}
-          </button>
-          {mut.error && <p className="text-red-400 text-[10px] mt-1">{(mut.error as Error).message}</p>}
-        </td>
       </tr>
       {open && (
         <tr className="border-t border-border bg-[rgba(255,255,255,.02)]">
-          <td colSpan={8} className="p-4">
+          <td colSpan={6} className="p-4">
             {isLoading && <p className="text-[var(--w55)] text-xs">Loading contacts…</p>}
             {!isLoading && contacts && contacts.length === 0 && (
-              <p className="text-[var(--w55)] text-xs">No contacts yet. Run skip trace to populate.</p>
+              <p className="text-[var(--w55)] text-xs">No contacts yet.</p>
             )}
             {contacts && contacts.length > 0 && (
               <ul className="space-y-1.5">
@@ -474,36 +283,6 @@ function OwnerRow({
         </tr>
       )}
     </>
-  );
-}
-
-function BulkRowIndicator({ bulk }: { bulk: BulkProgress }) {
-  if (bulk.status === "queued") {
-    return <span className="text-[10px] text-[var(--w55)] inline-flex items-center gap-1">• Queued</span>;
-  }
-  if (bulk.status === "running") {
-    return (
-      <span className="text-[10px] text-cyan inline-flex items-center gap-1">
-        <Loader2 className="h-3 w-3 animate-spin" /> Tracing…
-      </span>
-    );
-  }
-  if (bulk.status === "error") {
-    return (
-      <span className="text-[10px] text-red-400 inline-flex items-center gap-1" title={bulk.message}>
-        <AlertCircle className="h-3 w-3" /> Failed
-      </span>
-    );
-  }
-  // done
-  const label =
-    bulk.outcome === "no_hit"
-      ? "No hits"
-      : `+${bulk.inserted ?? 0} contact${(bulk.inserted ?? 0) === 1 ? "" : "s"}`;
-  return (
-    <span className="text-[10px] text-emerald-400 inline-flex items-center gap-1">
-      <CheckCircle2 className="h-3 w-3" /> {label}
-    </span>
   );
 }
 

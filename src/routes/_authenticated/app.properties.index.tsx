@@ -360,11 +360,6 @@ function PropertiesPage() {
         description="Nationwide property records with equity, distress signals, and AI lead scoring."
         cta={
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link to="/app/properties/search">
-              <Button variant="outline" className="border-border text-white hover:bg-[rgba(255,255,255,0.05)] flex items-center gap-2">
-                <Search className="w-4 h-4 text-cyan" /> Find & Import Properties
-              </Button>
-            </Link>
             <ImportLeadsDialog />
             {createDialog}
           </div>
@@ -399,11 +394,6 @@ function PropertiesPage() {
           <h1 className="h-display text-[clamp(28px,4vw,44px)] mt-2">Workspace</h1>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <Link to="/app/properties/search">
-            <Button variant="outline" className="border-border text-white hover:bg-[rgba(255,255,255,0.05)] flex items-center gap-2">
-              <Search className="w-4 h-4 text-cyan" /> Search Properties
-            </Button>
-          </Link>
           <ImportLeadsDialog />
           {createDialog}
         </div>

@@ -195,11 +195,11 @@ export const recordReply = createServerFn({ method: "POST" })
 export const listReachableOwners = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    // Pull all owners so the dialog can also show pending/no-hit entries,
-    // not just owners that already have phone/email rows.
+    // Pull all owners so the dialog can also list owners that do not yet
+    // have any phone/email rows.
     const { data: ownerRows, error: oErr } = await context.supabase
       .from("owners")
-      .select("id, full_name, skip_trace_status, skip_trace_last_run_at")
+      .select("id, full_name")
       .order("full_name", { ascending: true })
       .limit(500);
     if (oErr) throw new Error(oErr.message);
@@ -241,8 +241,6 @@ export const listReachableOwners = createServerFn({ method: "GET" })
       return {
         owner_id: o.id,
         full_name: o.full_name,
-        skip_trace_status: (o.skip_trace_status ?? "pending") as "pending" | "traced" | "no_hit" | "failed",
-        skip_trace_last_run_at: o.skip_trace_last_run_at as string | null,
         phones,
         emails,
       };

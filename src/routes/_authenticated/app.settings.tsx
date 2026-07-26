@@ -1,8 +1,8 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { LogOut, User as UserIcon, Mail, Building2, Calendar, Upload, Loader2, Plug, ChevronRight } from "lucide-react";
+import { LogOut, User as UserIcon, Mail, Building2, Calendar, Upload, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -342,24 +342,6 @@ function SettingsPage() {
             </Button>
           </div>
         </div>
-      </section>
-
-      <section className="rounded-xl border border-border bg-card/40 p-6 space-y-4">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <Plug className="h-4 w-4" /> Integrations
-        </h2>
-        <Link
-          to="/app/settings/integrations"
-          className="flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-background/40 p-4 hover:border-cyan-500/50 hover:bg-cyan-950/10 transition-colors"
-        >
-          <div>
-            <div className="font-medium text-sm">ATTOM Data API</div>
-            <div className="text-xs text-[var(--w55)] mt-0.5">
-              Add your API key to unlock real-time nationwide US property search.
-            </div>
-          </div>
-          <ChevronRight className="h-4 w-4 text-[var(--w45)]" />
-        </Link>
       </section>
 
       <section className="rounded-xl border border-border bg-card/40 p-6 space-y-4">

@@ -10,24 +10,14 @@ const SYSTEM_PROMPT = `You are PropAI Agent, an assistant for a real-estate inve
 You have read access to the user's private workspace via tools:
 - list_properties: browse the user's saved properties (with lead scores and distress flags)
 - get_property: full details for one property including its owner(s) and contact info
-- list_recent_leads: inbound contact-form leads from the public site (admin-only)
-- search_leads: search inbound leads by name/email/company or filter by status
-- get_lead: full details for one inbound lead including notes, email history, and assignments
-- list_contracts: list the user's contracts, optionally filtered by status (draft/sent/viewed/signed/failed)
-- get_contract: full details for one contract including buyer/seller/property/signing status
-- workspace_summary: top-line counts (properties, leads, contracts by status) for the user's workspace
+- workspace_summary: top-line counts (properties, owners, contacts) for the user's workspace
 
 Use tools proactively when the user asks about their data — don't guess. Call workspace_summary first when the user asks something open-ended ("what's going on", "give me an overview").
 
-When summarizing leads or properties:
+When summarizing properties:
 - group by distress signal (preforeclosure / vacant / absentee) and equity
 - highlight the highest-scoring opportunities
 - be concise; use markdown bullet lists
-
-When discussing contracts:
-- always include status, buyer/seller, purchase price, and signed date if available
-- flag any contract in 'failed' status as needing attention
-- never invent IDs, prices, or counterparties
 
 When drafting outreach:
 - adapt tone to the channel (SMS = short, email = warm, letter = personal)
@@ -36,13 +26,12 @@ When drafting outreach:
 - never invent owner names, phone numbers, or details that aren't in the data
 
 TASK MODE:
-When the user asks for a plan, checklist, next steps, "what should I do", or the message is prefixed with [TASK MODE], you MUST call the create_task_plan tool. Group into sections like "Contacts to call", "Outreach drafts", "Follow-ups", "Contracts to chase", "Research". Each task is one concrete action. After calling the tool, give a one-sentence summary — do not repeat the list as prose.
+When the user asks for a plan, checklist, next steps, "what should I do", or the message is prefixed with [TASK MODE], you MUST call the create_task_plan tool. Group into sections like "Contacts to call", "Outreach drafts", "Follow-ups", "Research". Each task is one concrete action. After calling the tool, give a one-sentence summary — do not repeat the list as prose.
 
 EMPTY RESULTS ≠ PERMISSION ERRORS:
 - Tools return data scoped to the signed-in user via RLS. An empty array (e.g. count: 0, properties: []) means the user simply has no records yet — NOT that you lack permission.
 - Never tell the user you have a "permission error", "authorization issue", or "can't access" their data unless a tool response actually contains an \`error\` field. If you see \`error\`, quote it verbatim.
-- Lead tools include an \`access_status\` field. If it is \`admin\` and \`count\` is 0, say there are no website lead submissions yet. Do not mention permissions.
-- If the workspace is empty, say so plainly and suggest concrete next steps (e.g. "add a property", "import a lead list", "wait for the first website lead").`;
+- If the workspace is empty, say so plainly and suggest concrete next steps (e.g. "add a property", "import a lead list").`;
 
 export const Route = createFileRoute("/api/chat")({
   server: {
@@ -92,13 +81,6 @@ export const Route = createFileRoute("/api/chat")({
         const incoming = body.messages as UIMessage[];
         const lastUserMsg = [...incoming].reverse().find((m) => m.role === "user");
 
-        const getAdminStatus = async () => {
-          const { data, error } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
-          if (error) return { isAdmin: false, error: error.message };
-          return { isAdmin: Boolean(data), error: null };
-        };
-
-
         const gateway = createLovableAiGatewayProvider(lovableKey);
         const model = gateway("google/gemini-3-flash-preview");
 
@@ -141,155 +123,19 @@ export const Route = createFileRoute("/api/chat")({
               return { property, owners: owners ?? [], contacts: contacts ?? [] };
             },
           }),
-          list_recent_leads: tool({
-            description: "List the most recent inbound leads from the public contact form. access_status=admin with count=0 means no submissions exist yet, not a permission problem.",
-            inputSchema: z.object({ limit: z.number().min(1).max(50).default(20) }),
-            execute: async ({ limit }) => {
-              const adminStatus = await getAdminStatus();
-              if (adminStatus.error) return { error: adminStatus.error };
-              if (!adminStatus.isAdmin) return { access_status: "not_admin" as const, count: 0, leads: [] };
-              const { data, error } = await supabase
-                .from("leads").select("id, full_name, email, company, phone, message, status, created_at")
-                .order("created_at", { ascending: false }).limit(limit);
-              if (error) return { error: error.message };
-              return { access_status: "admin" as const, count: data?.length ?? 0, leads: data ?? [] };
-            },
-          }),
-          search_leads: tool({
-            description: "Search inbound leads from the public contact form by name/email/company text or filter by status. access_status=admin with count=0 means no matches/submissions exist yet.",
-            inputSchema: z.object({
-              query: z.string().optional().describe("Free-text match against full_name, email, company"),
-              status: z.string().optional().describe("Filter by status (e.g. new, contacted, qualified, archived)"),
-              limit: z.number().min(1).max(50).default(20),
-            }),
-            execute: async ({ query, status, limit }) => {
-              const adminStatus = await getAdminStatus();
-              if (adminStatus.error) return { error: adminStatus.error };
-              if (!adminStatus.isAdmin) return { access_status: "not_admin" as const, count: 0, leads: [] };
-              let q = supabase
-                .from("leads")
-                .select("id, full_name, email, company, phone, message, status, source, created_at")
-                .order("created_at", { ascending: false })
-                .limit(limit);
-              if (status) q = q.eq("status", status);
-              if (query && query.trim()) {
-                const term = `%${query.trim()}%`;
-                q = q.or(`full_name.ilike.${term},email.ilike.${term},company.ilike.${term}`);
-              }
-              const { data, error } = await q;
-              if (error) return { error: error.message };
-              return { access_status: "admin" as const, count: data?.length ?? 0, leads: data ?? [] };
-            },
-          }),
-          get_lead: tool({
-            description: "Get full details for one inbound lead including its notes, email send history, and assignment history. Use when the user asks about a specific lead by name or ID.",
-            inputSchema: z.object({ lead_id: z.string().uuid() }),
-            execute: async ({ lead_id }) => {
-              const adminStatus = await getAdminStatus();
-              if (adminStatus.error) return { error: adminStatus.error };
-              if (!adminStatus.isAdmin) return { access_status: "not_admin" as const, error: "Admin role required to view website leads." };
-              const { data: lead, error } = await supabase
-                .from("leads")
-                .select("id, full_name, email, company, phone, message, source, status, assigned_to, created_at")
-                .eq("id", lead_id)
-                .maybeSingle();
-              if (error) return { error: error.message };
-              if (!lead) return { error: "Lead not found" };
-              const [notesRes, emailsRes, assignmentsRes] = await Promise.all([
-                supabase
-                  .from("lead_notes")
-                  .select("id, body, author_id, created_at")
-                  .eq("lead_id", lead_id)
-                  .order("created_at", { ascending: false })
-                  .limit(50),
-                supabase
-                  .from("lead_emails")
-                  .select("id, recipient_email, recipient_id, sent_by, status, error_message, created_at")
-                  .eq("lead_id", lead_id)
-                  .order("created_at", { ascending: false })
-                  .limit(50),
-                supabase
-                  .from("lead_assignments")
-                  .select("id, assigned_to, assigned_by, created_at")
-                  .eq("lead_id", lead_id)
-                  .order("created_at", { ascending: false })
-                  .limit(20),
-              ]);
-              return {
-                lead,
-                notes: notesRes.data ?? [],
-                emails: emailsRes.data ?? [],
-                assignments: assignmentsRes.data ?? [],
-              };
-            },
-          }),
-          list_contracts: tool({
-            description: "List the user's contracts (newest first). Optionally filter by status: draft, sent, viewed, signed, failed.",
-            inputSchema: z.object({
-              status: z.string().optional().describe("Filter by status"),
-              limit: z.number().min(1).max(50).default(25),
-            }),
-            execute: async ({ status, limit }) => {
-              let q = supabase
-                .from("contracts")
-                .select("id, buyer_name, seller_name, purchase_price, closing_date, status, signed_at, property_id, error_message, created_at")
-                .order("created_at", { ascending: false })
-                .limit(limit);
-              if (status) q = q.eq("status", status);
-              const { data, error } = await q;
-              if (error) return { error: error.message };
-              return { count: data?.length ?? 0, contracts: data ?? [] };
-            },
-          }),
-          get_contract: tool({
-            description: "Get full details for one contract including buyer/seller info, signing status, and linked property.",
-            inputSchema: z.object({ contract_id: z.string().uuid() }),
-            execute: async ({ contract_id }) => {
-              const { data: contract, error } = await supabase
-                .from("contracts")
-                .select("id, buyer_name, buyer_email, seller_name, seller_email, purchase_price, closing_date, status, signed_at, signwell_document_id, error_message, property_id, created_at, updated_at")
-                .eq("id", contract_id)
-                .maybeSingle();
-              if (error) return { error: error.message };
-              if (!contract) return { error: "Contract not found" };
-              let property = null;
-              if (contract.property_id) {
-                const { data: p } = await supabase
-                  .from("properties")
-                  .select("id, address, city, state, zip, estimated_value")
-                  .eq("id", contract.property_id)
-                  .maybeSingle();
-                property = p;
-              }
-              return { contract, property };
-            },
-          }),
           workspace_summary: tool({
-            description: "High-level counts for the user's workspace: total properties, distressed properties, contracts grouped by status, and recent lead count.",
+            description: "High-level counts for the user's workspace: total properties, owners, and contacts.",
             inputSchema: z.object({}),
             execute: async () => {
-              const [propsRes, distressRes, contractsRes, leadsRes] = await Promise.all([
+              const [propsRes, ownersRes, contactsRes] = await Promise.all([
                 supabase.from("properties").select("id", { count: "exact", head: true }),
-                supabase
-                  .from("properties")
-                  .select("id", { count: "exact", head: true })
-                  .or("is_preforeclosure.eq.true,is_vacant.eq.true,is_absentee.eq.true"),
-                supabase.from("contracts").select("status"),
-                supabase.from("leads").select("id", { count: "exact", head: true }),
+                supabase.from("owners").select("id", { count: "exact", head: true }),
+                supabase.from("contacts").select("id", { count: "exact", head: true }),
               ]);
-              const adminStatus = await getAdminStatus();
-              const contractsByStatus: Record<string, number> = {};
-              for (const row of contractsRes.data ?? []) {
-                const s = (row as { status: string | null }).status ?? "unknown";
-                contractsByStatus[s] = (contractsByStatus[s] ?? 0) + 1;
-              }
               return {
                 properties_total: propsRes.count ?? 0,
-                properties_distressed: distressRes.count ?? 0,
-                contracts_total: (contractsRes.data ?? []).length,
-                contracts_by_status: contractsByStatus,
-                leads_access_status: adminStatus.error ? "unknown" : adminStatus.isAdmin ? "admin" : "not_admin",
-                leads_total: leadsRes.count ?? 0,
+                owners_total: ownersRes.count ?? 0,
+                contacts_total: contactsRes.count ?? 0,
               };
             },
           }),

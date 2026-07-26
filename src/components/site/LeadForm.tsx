@@ -1,3 +1,10 @@
+// Public contact / inquiry form.
+//
+// Stubbed during the SpaAI cut: the lead-funnel fields (company, target city,
+// state, ZIP) are gone, along with the qualification framing. What remains is a
+// plain "get in touch" form. The SMS consent checkbox and its disclosure text are
+// deliberately unchanged — that is the TCPA record, not funnel machinery.
+
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -11,11 +18,7 @@ const schema = z.object({
     .min(7, "Enter a valid phone number")
     .max(20)
     .regex(/^[+()\-\s\d]+$/, "Enter a valid phone number"),
-  company: z.string().trim().max(120).optional(),
   message: z.string().trim().max(2000).optional(),
-  city: z.string().trim().max(80).optional(),
-  state: z.string().trim().regex(/^[A-Za-z]{2}$/i, "Use 2-letter state").optional().or(z.literal("")),
-  zip: z.string().trim().regex(/^\d{5}(-\d{4})?$/, "5-digit ZIP").optional().or(z.literal("")),
   sms_opt_in: z.literal("on", {
     errorMap: () => ({ message: "You must agree to receive text messages to continue" }),
   }),
@@ -32,11 +35,7 @@ export function LeadForm({ source = "landing" }: { source?: string }) {
       full_name: fd.get("full_name"),
       email: fd.get("email"),
       phone: fd.get("phone"),
-      company: fd.get("company") || undefined,
       message: fd.get("message") || undefined,
-      city: fd.get("city") || undefined,
-      state: fd.get("state") || undefined,
-      zip: fd.get("zip") || undefined,
       sms_opt_in: fd.get("sms_opt_in"),
     });
     if (!parsed.success) {
@@ -70,8 +69,8 @@ export function LeadForm({ source = "landing" }: { source?: string }) {
     return (
       <div className="surface p-8 text-center">
         <div className="text-cyan text-3xl mb-2">✓</div>
-        <div className="font-semibold">You're on the list.</div>
-        <div className="text-sm text-[var(--w55)] mt-1">A specialist will reach out within 24 hours.</div>
+        <div className="font-semibold">Message received.</div>
+        <div className="text-sm text-[var(--w55)] mt-1">We'll get back to you within 24 hours.</div>
       </div>
     );
   }
@@ -96,16 +95,10 @@ export function LeadForm({ source = "landing" }: { source?: string }) {
       </div>
       <div className="grid sm:grid-cols-2 gap-3">
         <input name="full_name" required placeholder="Full name" className="bg-[var(--s1)] border border-border rounded-md px-4 py-3 text-sm w-full focus:outline-none focus:border-cyan" />
-        <input name="email" type="email" required placeholder="Work email" className="bg-[var(--s1)] border border-border rounded-md px-4 py-3 text-sm w-full focus:outline-none focus:border-cyan" />
+        <input name="email" type="email" required placeholder="Email" className="bg-[var(--s1)] border border-border rounded-md px-4 py-3 text-sm w-full focus:outline-none focus:border-cyan" />
       </div>
       <input name="phone" type="tel" required placeholder="Mobile phone (e.g. +1 555 123 4567)" className="bg-[var(--s1)] border border-border rounded-md px-4 py-3 text-sm w-full focus:outline-none focus:border-cyan" />
-      <input name="company" placeholder="Brokerage / company (optional)" className="bg-[var(--s1)] border border-border rounded-md px-4 py-3 text-sm w-full focus:outline-none focus:border-cyan" />
-      <div className="grid grid-cols-2 sm:grid-cols-[1fr_80px_120px] gap-3">
-        <input name="city" placeholder="Target city (optional)" className="bg-[var(--s1)] border border-border rounded-md px-4 py-3 text-sm w-full focus:outline-none focus:border-cyan" />
-        <input name="state" maxLength={2} placeholder="ST" className="bg-[var(--s1)] border border-border rounded-md px-4 py-3 text-sm w-full uppercase focus:outline-none focus:border-cyan" />
-        <input name="zip" inputMode="numeric" maxLength={10} placeholder="ZIP" className="bg-[var(--s1)] border border-border rounded-md px-4 py-3 text-sm w-full focus:outline-none focus:border-cyan" />
-      </div>
-      <textarea name="message" rows={3} placeholder="What are you hoping PropAI can do for you? Tell us about target neighborhoods." className="bg-[var(--s1)] border border-border rounded-md px-4 py-3 text-sm w-full focus:outline-none focus:border-cyan resize-none" />
+      <textarea name="message" rows={4} placeholder="How can we help?" className="bg-[var(--s1)] border border-border rounded-md px-4 py-3 text-sm w-full focus:outline-none focus:border-cyan resize-none" />
 
       <label className="flex gap-3 items-start text-[12px] leading-[1.55] text-[var(--w55)] cursor-pointer select-none">
         <input
@@ -122,9 +115,9 @@ export function LeadForm({ source = "landing" }: { source?: string }) {
       </label>
 
       <button disabled={loading} className="btn-primary w-full disabled:opacity-60">
-        {loading ? "Sending…" : "Request a demo →"}
+        {loading ? "Sending…" : "Get in touch →"}
       </button>
-      <p className="text-[11px] text-[var(--w35)] text-center">No credit card. We respond within 24 hours.</p>
+      <p className="text-[11px] text-[var(--w35)] text-center">We respond within 24 hours.</p>
     </form>
   );
 }

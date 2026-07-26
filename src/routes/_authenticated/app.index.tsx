@@ -46,7 +46,6 @@ function Overview() {
     contacts: t("sidebar.contactsResolver"),
     lead_lists: t("sidebar.leadLists"),
     campaigns: t("sidebar.campaignsLanguage"),
-    videos: t("sidebar.videosVoice"),
   };
 
   return (

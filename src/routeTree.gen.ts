@@ -28,13 +28,7 @@ import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/ap
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicLeadNotifyRouteImport } from './routes/api/public/lead-notify'
-import { Route as ApiPublicAttomHealthRouteImport } from './routes/api/public/attom-health'
-import { Route as ApiEnginesTtsRouteImport } from './routes/api/engines/tts'
 import { Route as AuthenticatedBillingReturnRouteImport } from './routes/_authenticated/billing.return'
-import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app.watchlist'
-import { Route as AuthenticatedAppVisionRouteImport } from './routes/_authenticated/app.vision'
-import { Route as AuthenticatedAppVideosRouteImport } from './routes/_authenticated/app.videos'
-import { Route as AuthenticatedAppTitleSearchRouteImport } from './routes/_authenticated/app.title-search'
 import { Route as AuthenticatedAppSocialRouteImport } from './routes/_authenticated/app.social'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app.settings'
 import { Route as AuthenticatedAppScoringRouteImport } from './routes/_authenticated/app.scoring'
@@ -43,14 +37,10 @@ import { Route as AuthenticatedAppOwnersRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAppOutreachRouteImport } from './routes/_authenticated/app.outreach'
 import { Route as AuthenticatedAppOptOutsRouteImport } from './routes/_authenticated/app.opt-outs'
 import { Route as AuthenticatedAppNotificationsRouteImport } from './routes/_authenticated/app.notifications'
-import { Route as AuthenticatedAppLeadsRouteImport } from './routes/_authenticated/app.leads'
 import { Route as AuthenticatedAppLeadListsRouteImport } from './routes/_authenticated/app.lead-lists'
-import { Route as AuthenticatedAppForeclosureAgentRouteImport } from './routes/_authenticated/app.foreclosure-agent'
-import { Route as AuthenticatedAppContractsRouteImport } from './routes/_authenticated/app.contracts'
 import { Route as AuthenticatedAppContactsRouteImport } from './routes/_authenticated/app.contacts'
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated/app.campaigns'
 import { Route as AuthenticatedAppAuditRouteImport } from './routes/_authenticated/app.audit'
-import { Route as AuthenticatedAppAuctionsRouteImport } from './routes/_authenticated/app.auctions'
 import { Route as AuthenticatedAppAgentRouteImport } from './routes/_authenticated/app.agent'
 import { Route as AuthenticatedAppPropertiesIndexRouteImport } from './routes/_authenticated/app.properties.index'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
@@ -59,34 +49,19 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicHooksTwilioVoiceRouteImport } from './routes/api/public/hooks/twilio-voice'
 import { Route as ApiPublicHooksTwilioSmsRouteImport } from './routes/api/public/hooks/twilio-sms'
-import { Route as ApiPublicHooksSyncDistressedOneRouteImport } from './routes/api/public/hooks/sync-distressed-one'
-import { Route as ApiPublicHooksSyncDistressedRouteImport } from './routes/api/public/hooks/sync-distressed'
-import { Route as ApiPublicHooksSignwellRouteImport } from './routes/api/public/hooks/signwell'
 import { Route as ApiPublicHooksOutreachReplyRouteImport } from './routes/api/public/hooks/outreach-reply'
 import { Route as ApiPublicHooksNotifySmsRouteImport } from './routes/api/public/hooks/notify-sms'
 import { Route as ApiPublicHooksComplianceDigestRouteImport } from './routes/api/public/hooks/compliance-digest'
-import { Route as ApiPublicHooksCloseAuctionsRouteImport } from './routes/api/public/hooks/close-auctions'
 import { Route as AgentsSlugPPostSlugRouteImport } from './routes/agents.$slug.p.$postSlug'
-import { Route as AuthenticatedAppVisionLibraryRouteImport } from './routes/_authenticated/app.vision.library'
-import { Route as AuthenticatedAppTitleSearchHistoryRouteImport } from './routes/_authenticated/app.title-search.history'
 import { Route as AuthenticatedAppSocialComposeRouteImport } from './routes/_authenticated/app.social.compose'
 import { Route as AuthenticatedAppSocialBusinessPortfolioRouteImport } from './routes/_authenticated/app.social.business-portfolio'
 import { Route as AuthenticatedAppSettingsPublicProfileRouteImport } from './routes/_authenticated/app.settings.public-profile'
-import { Route as AuthenticatedAppSettingsIntegrationsRouteImport } from './routes/_authenticated/app.settings.integrations'
-import { Route as AuthenticatedAppPropertiesSearchRouteImport } from './routes/_authenticated/app.properties.search'
-import { Route as AuthenticatedAppPropertiesLookupHistoryRouteImport } from './routes/_authenticated/app.properties.lookup-history'
-import { Route as AuthenticatedAppPropertiesLookupRouteImport } from './routes/_authenticated/app.properties.lookup'
 import { Route as AuthenticatedAppPropertiesPropertyIdRouteImport } from './routes/_authenticated/app.properties.$propertyId'
-import { Route as AuthenticatedAppLeadsLeadIdRouteImport } from './routes/_authenticated/app.leads.$leadId'
-import { Route as AuthenticatedAppContractsContractIdRouteImport } from './routes/_authenticated/app.contracts.$contractId'
-import { Route as AuthenticatedAppAuctionsAuctionIdRouteImport } from './routes/_authenticated/app.auctions.$auctionId'
 import { Route as AuthenticatedAppAgentThreadIdRouteImport } from './routes/_authenticated/app.agent.$threadId'
-import { Route as AuthenticatedAppAdminContractsRouteImport } from './routes/_authenticated/app.admin.contracts'
 import { Route as ApiPublicOauthYoutubeStartRouteImport } from './routes/api/public/oauth/youtube.start'
 import { Route as ApiPublicOauthXStartRouteImport } from './routes/api/public/oauth/x.start'
 import { Route as ApiPublicOauthMetaStartRouteImport } from './routes/api/public/oauth/meta.start'
 import { Route as ApiPublicOauthMetaCallbackRouteImport } from './routes/api/public/oauth/meta.callback'
-import { Route as AuthenticatedAppAdminContractsContractIdRouteImport } from './routes/_authenticated/app.admin.contracts.$contractId'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -182,43 +157,11 @@ const ApiPublicLeadNotifyRoute = ApiPublicLeadNotifyRouteImport.update({
   path: '/api/public/lead-notify',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicAttomHealthRoute = ApiPublicAttomHealthRouteImport.update({
-  id: '/api/public/attom-health',
-  path: '/api/public/attom-health',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiEnginesTtsRoute = ApiEnginesTtsRouteImport.update({
-  id: '/api/engines/tts',
-  path: '/api/engines/tts',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedBillingReturnRoute =
   AuthenticatedBillingReturnRouteImport.update({
     id: '/return',
     path: '/return',
     getParentRoute: () => AuthenticatedBillingRoute,
-  } as any)
-const AuthenticatedAppWatchlistRoute =
-  AuthenticatedAppWatchlistRouteImport.update({
-    id: '/watchlist',
-    path: '/watchlist',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppVisionRoute = AuthenticatedAppVisionRouteImport.update({
-  id: '/vision',
-  path: '/vision',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppVideosRoute = AuthenticatedAppVideosRouteImport.update({
-  id: '/videos',
-  path: '/videos',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppTitleSearchRoute =
-  AuthenticatedAppTitleSearchRouteImport.update({
-    id: '/title-search',
-    path: '/title-search',
-    getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppSocialRoute = AuthenticatedAppSocialRouteImport.update({
   id: '/social',
@@ -264,27 +207,10 @@ const AuthenticatedAppNotificationsRoute =
     path: '/notifications',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppLeadsRoute = AuthenticatedAppLeadsRouteImport.update({
-  id: '/leads',
-  path: '/leads',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
 const AuthenticatedAppLeadListsRoute =
   AuthenticatedAppLeadListsRouteImport.update({
     id: '/lead-lists',
     path: '/lead-lists',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppForeclosureAgentRoute =
-  AuthenticatedAppForeclosureAgentRouteImport.update({
-    id: '/foreclosure-agent',
-    path: '/foreclosure-agent',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppContractsRoute =
-  AuthenticatedAppContractsRouteImport.update({
-    id: '/contracts',
-    path: '/contracts',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppContactsRoute =
@@ -304,12 +230,6 @@ const AuthenticatedAppAuditRoute = AuthenticatedAppAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
-const AuthenticatedAppAuctionsRoute =
-  AuthenticatedAppAuctionsRouteImport.update({
-    id: '/auctions',
-    path: '/auctions',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
 const AuthenticatedAppAgentRoute = AuthenticatedAppAgentRouteImport.update({
   id: '/agent',
   path: '/agent',
@@ -355,23 +275,6 @@ const ApiPublicHooksTwilioSmsRoute = ApiPublicHooksTwilioSmsRouteImport.update({
   path: '/api/public/hooks/twilio-sms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicHooksSyncDistressedOneRoute =
-  ApiPublicHooksSyncDistressedOneRouteImport.update({
-    id: '/api/public/hooks/sync-distressed-one',
-    path: '/api/public/hooks/sync-distressed-one',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksSyncDistressedRoute =
-  ApiPublicHooksSyncDistressedRouteImport.update({
-    id: '/api/public/hooks/sync-distressed',
-    path: '/api/public/hooks/sync-distressed',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksSignwellRoute = ApiPublicHooksSignwellRouteImport.update({
-  id: '/api/public/hooks/signwell',
-  path: '/api/public/hooks/signwell',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicHooksOutreachReplyRoute =
   ApiPublicHooksOutreachReplyRouteImport.update({
     id: '/api/public/hooks/outreach-reply',
@@ -389,29 +292,11 @@ const ApiPublicHooksComplianceDigestRoute =
     path: '/api/public/hooks/compliance-digest',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicHooksCloseAuctionsRoute =
-  ApiPublicHooksCloseAuctionsRouteImport.update({
-    id: '/api/public/hooks/close-auctions',
-    path: '/api/public/hooks/close-auctions',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const AgentsSlugPPostSlugRoute = AgentsSlugPPostSlugRouteImport.update({
   id: '/p/$postSlug',
   path: '/p/$postSlug',
   getParentRoute: () => AgentsSlugRoute,
 } as any)
-const AuthenticatedAppVisionLibraryRoute =
-  AuthenticatedAppVisionLibraryRouteImport.update({
-    id: '/library',
-    path: '/library',
-    getParentRoute: () => AuthenticatedAppVisionRoute,
-  } as any)
-const AuthenticatedAppTitleSearchHistoryRoute =
-  AuthenticatedAppTitleSearchHistoryRouteImport.update({
-    id: '/history',
-    path: '/history',
-    getParentRoute: () => AuthenticatedAppTitleSearchRoute,
-  } as any)
 const AuthenticatedAppSocialComposeRoute =
   AuthenticatedAppSocialComposeRouteImport.update({
     id: '/compose',
@@ -430,65 +315,17 @@ const AuthenticatedAppSettingsPublicProfileRoute =
     path: '/public-profile',
     getParentRoute: () => AuthenticatedAppSettingsRoute,
   } as any)
-const AuthenticatedAppSettingsIntegrationsRoute =
-  AuthenticatedAppSettingsIntegrationsRouteImport.update({
-    id: '/integrations',
-    path: '/integrations',
-    getParentRoute: () => AuthenticatedAppSettingsRoute,
-  } as any)
-const AuthenticatedAppPropertiesSearchRoute =
-  AuthenticatedAppPropertiesSearchRouteImport.update({
-    id: '/search',
-    path: '/search',
-    getParentRoute: () => AuthenticatedAppPropertiesRoute,
-  } as any)
-const AuthenticatedAppPropertiesLookupHistoryRoute =
-  AuthenticatedAppPropertiesLookupHistoryRouteImport.update({
-    id: '/lookup-history',
-    path: '/lookup-history',
-    getParentRoute: () => AuthenticatedAppPropertiesRoute,
-  } as any)
-const AuthenticatedAppPropertiesLookupRoute =
-  AuthenticatedAppPropertiesLookupRouteImport.update({
-    id: '/lookup',
-    path: '/lookup',
-    getParentRoute: () => AuthenticatedAppPropertiesRoute,
-  } as any)
 const AuthenticatedAppPropertiesPropertyIdRoute =
   AuthenticatedAppPropertiesPropertyIdRouteImport.update({
     id: '/$propertyId',
     path: '/$propertyId',
     getParentRoute: () => AuthenticatedAppPropertiesRoute,
   } as any)
-const AuthenticatedAppLeadsLeadIdRoute =
-  AuthenticatedAppLeadsLeadIdRouteImport.update({
-    id: '/$leadId',
-    path: '/$leadId',
-    getParentRoute: () => AuthenticatedAppLeadsRoute,
-  } as any)
-const AuthenticatedAppContractsContractIdRoute =
-  AuthenticatedAppContractsContractIdRouteImport.update({
-    id: '/$contractId',
-    path: '/$contractId',
-    getParentRoute: () => AuthenticatedAppContractsRoute,
-  } as any)
-const AuthenticatedAppAuctionsAuctionIdRoute =
-  AuthenticatedAppAuctionsAuctionIdRouteImport.update({
-    id: '/$auctionId',
-    path: '/$auctionId',
-    getParentRoute: () => AuthenticatedAppAuctionsRoute,
-  } as any)
 const AuthenticatedAppAgentThreadIdRoute =
   AuthenticatedAppAgentThreadIdRouteImport.update({
     id: '/$threadId',
     path: '/$threadId',
     getParentRoute: () => AuthenticatedAppAgentRoute,
-  } as any)
-const AuthenticatedAppAdminContractsRoute =
-  AuthenticatedAppAdminContractsRouteImport.update({
-    id: '/admin/contracts',
-    path: '/admin/contracts',
-    getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const ApiPublicOauthYoutubeStartRoute =
   ApiPublicOauthYoutubeStartRouteImport.update({
@@ -512,12 +349,6 @@ const ApiPublicOauthMetaCallbackRoute =
     path: '/api/public/oauth/meta/callback',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AuthenticatedAppAdminContractsContractIdRoute =
-  AuthenticatedAppAdminContractsContractIdRouteImport.update({
-    id: '/$contractId',
-    path: '/$contractId',
-    getParentRoute: () => AuthenticatedAppAdminContractsRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -536,14 +367,10 @@ export interface FileRoutesByFullPath {
   '/api/transcribe': typeof ApiTranscribeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/app/agent': typeof AuthenticatedAppAgentRouteWithChildren
-  '/app/auctions': typeof AuthenticatedAppAuctionsRouteWithChildren
   '/app/audit': typeof AuthenticatedAppAuditRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/contacts': typeof AuthenticatedAppContactsRoute
-  '/app/contracts': typeof AuthenticatedAppContractsRouteWithChildren
-  '/app/foreclosure-agent': typeof AuthenticatedAppForeclosureAgentRoute
   '/app/lead-lists': typeof AuthenticatedAppLeadListsRoute
-  '/app/leads': typeof AuthenticatedAppLeadsRouteWithChildren
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
   '/app/opt-outs': typeof AuthenticatedAppOptOutsRoute
   '/app/outreach': typeof AuthenticatedAppOutreachRoute
@@ -552,39 +379,19 @@ export interface FileRoutesByFullPath {
   '/app/scoring': typeof AuthenticatedAppScoringRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/social': typeof AuthenticatedAppSocialRouteWithChildren
-  '/app/title-search': typeof AuthenticatedAppTitleSearchRouteWithChildren
-  '/app/videos': typeof AuthenticatedAppVideosRoute
-  '/app/vision': typeof AuthenticatedAppVisionRouteWithChildren
-  '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/billing/return': typeof AuthenticatedBillingReturnRoute
-  '/api/engines/tts': typeof ApiEnginesTtsRoute
-  '/api/public/attom-health': typeof ApiPublicAttomHealthRoute
   '/api/public/lead-notify': typeof ApiPublicLeadNotifyRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/app/': typeof AuthenticatedAppIndexRoute
-  '/app/admin/contracts': typeof AuthenticatedAppAdminContractsRouteWithChildren
   '/app/agent/$threadId': typeof AuthenticatedAppAgentThreadIdRoute
-  '/app/auctions/$auctionId': typeof AuthenticatedAppAuctionsAuctionIdRoute
-  '/app/contracts/$contractId': typeof AuthenticatedAppContractsContractIdRoute
-  '/app/leads/$leadId': typeof AuthenticatedAppLeadsLeadIdRoute
   '/app/properties/$propertyId': typeof AuthenticatedAppPropertiesPropertyIdRoute
-  '/app/properties/lookup': typeof AuthenticatedAppPropertiesLookupRoute
-  '/app/properties/lookup-history': typeof AuthenticatedAppPropertiesLookupHistoryRoute
-  '/app/properties/search': typeof AuthenticatedAppPropertiesSearchRoute
-  '/app/settings/integrations': typeof AuthenticatedAppSettingsIntegrationsRoute
   '/app/settings/public-profile': typeof AuthenticatedAppSettingsPublicProfileRoute
   '/app/social/business-portfolio': typeof AuthenticatedAppSocialBusinessPortfolioRoute
   '/app/social/compose': typeof AuthenticatedAppSocialComposeRoute
-  '/app/title-search/history': typeof AuthenticatedAppTitleSearchHistoryRoute
-  '/app/vision/library': typeof AuthenticatedAppVisionLibraryRoute
   '/agents/$slug/p/$postSlug': typeof AgentsSlugPPostSlugRoute
-  '/api/public/hooks/close-auctions': typeof ApiPublicHooksCloseAuctionsRoute
   '/api/public/hooks/compliance-digest': typeof ApiPublicHooksComplianceDigestRoute
   '/api/public/hooks/notify-sms': typeof ApiPublicHooksNotifySmsRoute
   '/api/public/hooks/outreach-reply': typeof ApiPublicHooksOutreachReplyRoute
-  '/api/public/hooks/signwell': typeof ApiPublicHooksSignwellRoute
-  '/api/public/hooks/sync-distressed': typeof ApiPublicHooksSyncDistressedRoute
-  '/api/public/hooks/sync-distressed-one': typeof ApiPublicHooksSyncDistressedOneRoute
   '/api/public/hooks/twilio-sms': typeof ApiPublicHooksTwilioSmsRoute
   '/api/public/hooks/twilio-voice': typeof ApiPublicHooksTwilioVoiceRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -592,7 +399,6 @@ export interface FileRoutesByFullPath {
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/app/properties/': typeof AuthenticatedAppPropertiesIndexRoute
-  '/app/admin/contracts/$contractId': typeof AuthenticatedAppAdminContractsContractIdRoute
   '/api/public/oauth/meta/callback': typeof ApiPublicOauthMetaCallbackRoute
   '/api/public/oauth/meta/start': typeof ApiPublicOauthMetaStartRoute
   '/api/public/oauth/x/start': typeof ApiPublicOauthXStartRoute
@@ -614,14 +420,10 @@ export interface FileRoutesByTo {
   '/api/transcribe': typeof ApiTranscribeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/app/agent': typeof AuthenticatedAppAgentRouteWithChildren
-  '/app/auctions': typeof AuthenticatedAppAuctionsRouteWithChildren
   '/app/audit': typeof AuthenticatedAppAuditRoute
   '/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/app/contacts': typeof AuthenticatedAppContactsRoute
-  '/app/contracts': typeof AuthenticatedAppContractsRouteWithChildren
-  '/app/foreclosure-agent': typeof AuthenticatedAppForeclosureAgentRoute
   '/app/lead-lists': typeof AuthenticatedAppLeadListsRoute
-  '/app/leads': typeof AuthenticatedAppLeadsRouteWithChildren
   '/app/notifications': typeof AuthenticatedAppNotificationsRoute
   '/app/opt-outs': typeof AuthenticatedAppOptOutsRoute
   '/app/outreach': typeof AuthenticatedAppOutreachRoute
@@ -629,39 +431,19 @@ export interface FileRoutesByTo {
   '/app/scoring': typeof AuthenticatedAppScoringRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/social': typeof AuthenticatedAppSocialRouteWithChildren
-  '/app/title-search': typeof AuthenticatedAppTitleSearchRouteWithChildren
-  '/app/videos': typeof AuthenticatedAppVideosRoute
-  '/app/vision': typeof AuthenticatedAppVisionRouteWithChildren
-  '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/billing/return': typeof AuthenticatedBillingReturnRoute
-  '/api/engines/tts': typeof ApiEnginesTtsRoute
-  '/api/public/attom-health': typeof ApiPublicAttomHealthRoute
   '/api/public/lead-notify': typeof ApiPublicLeadNotifyRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/app': typeof AuthenticatedAppIndexRoute
-  '/app/admin/contracts': typeof AuthenticatedAppAdminContractsRouteWithChildren
   '/app/agent/$threadId': typeof AuthenticatedAppAgentThreadIdRoute
-  '/app/auctions/$auctionId': typeof AuthenticatedAppAuctionsAuctionIdRoute
-  '/app/contracts/$contractId': typeof AuthenticatedAppContractsContractIdRoute
-  '/app/leads/$leadId': typeof AuthenticatedAppLeadsLeadIdRoute
   '/app/properties/$propertyId': typeof AuthenticatedAppPropertiesPropertyIdRoute
-  '/app/properties/lookup': typeof AuthenticatedAppPropertiesLookupRoute
-  '/app/properties/lookup-history': typeof AuthenticatedAppPropertiesLookupHistoryRoute
-  '/app/properties/search': typeof AuthenticatedAppPropertiesSearchRoute
-  '/app/settings/integrations': typeof AuthenticatedAppSettingsIntegrationsRoute
   '/app/settings/public-profile': typeof AuthenticatedAppSettingsPublicProfileRoute
   '/app/social/business-portfolio': typeof AuthenticatedAppSocialBusinessPortfolioRoute
   '/app/social/compose': typeof AuthenticatedAppSocialComposeRoute
-  '/app/title-search/history': typeof AuthenticatedAppTitleSearchHistoryRoute
-  '/app/vision/library': typeof AuthenticatedAppVisionLibraryRoute
   '/agents/$slug/p/$postSlug': typeof AgentsSlugPPostSlugRoute
-  '/api/public/hooks/close-auctions': typeof ApiPublicHooksCloseAuctionsRoute
   '/api/public/hooks/compliance-digest': typeof ApiPublicHooksComplianceDigestRoute
   '/api/public/hooks/notify-sms': typeof ApiPublicHooksNotifySmsRoute
   '/api/public/hooks/outreach-reply': typeof ApiPublicHooksOutreachReplyRoute
-  '/api/public/hooks/signwell': typeof ApiPublicHooksSignwellRoute
-  '/api/public/hooks/sync-distressed': typeof ApiPublicHooksSyncDistressedRoute
-  '/api/public/hooks/sync-distressed-one': typeof ApiPublicHooksSyncDistressedOneRoute
   '/api/public/hooks/twilio-sms': typeof ApiPublicHooksTwilioSmsRoute
   '/api/public/hooks/twilio-voice': typeof ApiPublicHooksTwilioVoiceRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -669,7 +451,6 @@ export interface FileRoutesByTo {
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/app/properties': typeof AuthenticatedAppPropertiesIndexRoute
-  '/app/admin/contracts/$contractId': typeof AuthenticatedAppAdminContractsContractIdRoute
   '/api/public/oauth/meta/callback': typeof ApiPublicOauthMetaCallbackRoute
   '/api/public/oauth/meta/start': typeof ApiPublicOauthMetaStartRoute
   '/api/public/oauth/x/start': typeof ApiPublicOauthXStartRoute
@@ -694,14 +475,10 @@ export interface FileRoutesById {
   '/api/transcribe': typeof ApiTranscribeRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/_authenticated/app/agent': typeof AuthenticatedAppAgentRouteWithChildren
-  '/_authenticated/app/auctions': typeof AuthenticatedAppAuctionsRouteWithChildren
   '/_authenticated/app/audit': typeof AuthenticatedAppAuditRoute
   '/_authenticated/app/campaigns': typeof AuthenticatedAppCampaignsRoute
   '/_authenticated/app/contacts': typeof AuthenticatedAppContactsRoute
-  '/_authenticated/app/contracts': typeof AuthenticatedAppContractsRouteWithChildren
-  '/_authenticated/app/foreclosure-agent': typeof AuthenticatedAppForeclosureAgentRoute
   '/_authenticated/app/lead-lists': typeof AuthenticatedAppLeadListsRoute
-  '/_authenticated/app/leads': typeof AuthenticatedAppLeadsRouteWithChildren
   '/_authenticated/app/notifications': typeof AuthenticatedAppNotificationsRoute
   '/_authenticated/app/opt-outs': typeof AuthenticatedAppOptOutsRoute
   '/_authenticated/app/outreach': typeof AuthenticatedAppOutreachRoute
@@ -710,39 +487,19 @@ export interface FileRoutesById {
   '/_authenticated/app/scoring': typeof AuthenticatedAppScoringRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/_authenticated/app/social': typeof AuthenticatedAppSocialRouteWithChildren
-  '/_authenticated/app/title-search': typeof AuthenticatedAppTitleSearchRouteWithChildren
-  '/_authenticated/app/videos': typeof AuthenticatedAppVideosRoute
-  '/_authenticated/app/vision': typeof AuthenticatedAppVisionRouteWithChildren
-  '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/_authenticated/billing/return': typeof AuthenticatedBillingReturnRoute
-  '/api/engines/tts': typeof ApiEnginesTtsRoute
-  '/api/public/attom-health': typeof ApiPublicAttomHealthRoute
   '/api/public/lead-notify': typeof ApiPublicLeadNotifyRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
-  '/_authenticated/app/admin/contracts': typeof AuthenticatedAppAdminContractsRouteWithChildren
   '/_authenticated/app/agent/$threadId': typeof AuthenticatedAppAgentThreadIdRoute
-  '/_authenticated/app/auctions/$auctionId': typeof AuthenticatedAppAuctionsAuctionIdRoute
-  '/_authenticated/app/contracts/$contractId': typeof AuthenticatedAppContractsContractIdRoute
-  '/_authenticated/app/leads/$leadId': typeof AuthenticatedAppLeadsLeadIdRoute
   '/_authenticated/app/properties/$propertyId': typeof AuthenticatedAppPropertiesPropertyIdRoute
-  '/_authenticated/app/properties/lookup': typeof AuthenticatedAppPropertiesLookupRoute
-  '/_authenticated/app/properties/lookup-history': typeof AuthenticatedAppPropertiesLookupHistoryRoute
-  '/_authenticated/app/properties/search': typeof AuthenticatedAppPropertiesSearchRoute
-  '/_authenticated/app/settings/integrations': typeof AuthenticatedAppSettingsIntegrationsRoute
   '/_authenticated/app/settings/public-profile': typeof AuthenticatedAppSettingsPublicProfileRoute
   '/_authenticated/app/social/business-portfolio': typeof AuthenticatedAppSocialBusinessPortfolioRoute
   '/_authenticated/app/social/compose': typeof AuthenticatedAppSocialComposeRoute
-  '/_authenticated/app/title-search/history': typeof AuthenticatedAppTitleSearchHistoryRoute
-  '/_authenticated/app/vision/library': typeof AuthenticatedAppVisionLibraryRoute
   '/agents/$slug/p/$postSlug': typeof AgentsSlugPPostSlugRoute
-  '/api/public/hooks/close-auctions': typeof ApiPublicHooksCloseAuctionsRoute
   '/api/public/hooks/compliance-digest': typeof ApiPublicHooksComplianceDigestRoute
   '/api/public/hooks/notify-sms': typeof ApiPublicHooksNotifySmsRoute
   '/api/public/hooks/outreach-reply': typeof ApiPublicHooksOutreachReplyRoute
-  '/api/public/hooks/signwell': typeof ApiPublicHooksSignwellRoute
-  '/api/public/hooks/sync-distressed': typeof ApiPublicHooksSyncDistressedRoute
-  '/api/public/hooks/sync-distressed-one': typeof ApiPublicHooksSyncDistressedOneRoute
   '/api/public/hooks/twilio-sms': typeof ApiPublicHooksTwilioSmsRoute
   '/api/public/hooks/twilio-voice': typeof ApiPublicHooksTwilioVoiceRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -750,7 +507,6 @@ export interface FileRoutesById {
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/_authenticated/app/properties/': typeof AuthenticatedAppPropertiesIndexRoute
-  '/_authenticated/app/admin/contracts/$contractId': typeof AuthenticatedAppAdminContractsContractIdRoute
   '/api/public/oauth/meta/callback': typeof ApiPublicOauthMetaCallbackRoute
   '/api/public/oauth/meta/start': typeof ApiPublicOauthMetaStartRoute
   '/api/public/oauth/x/start': typeof ApiPublicOauthXStartRoute
@@ -775,14 +531,10 @@ export interface FileRouteTypes {
     | '/api/transcribe'
     | '/email/unsubscribe'
     | '/app/agent'
-    | '/app/auctions'
     | '/app/audit'
     | '/app/campaigns'
     | '/app/contacts'
-    | '/app/contracts'
-    | '/app/foreclosure-agent'
     | '/app/lead-lists'
-    | '/app/leads'
     | '/app/notifications'
     | '/app/opt-outs'
     | '/app/outreach'
@@ -791,39 +543,19 @@ export interface FileRouteTypes {
     | '/app/scoring'
     | '/app/settings'
     | '/app/social'
-    | '/app/title-search'
-    | '/app/videos'
-    | '/app/vision'
-    | '/app/watchlist'
     | '/billing/return'
-    | '/api/engines/tts'
-    | '/api/public/attom-health'
     | '/api/public/lead-notify'
     | '/lovable/email/suppression'
     | '/app/'
-    | '/app/admin/contracts'
     | '/app/agent/$threadId'
-    | '/app/auctions/$auctionId'
-    | '/app/contracts/$contractId'
-    | '/app/leads/$leadId'
     | '/app/properties/$propertyId'
-    | '/app/properties/lookup'
-    | '/app/properties/lookup-history'
-    | '/app/properties/search'
-    | '/app/settings/integrations'
     | '/app/settings/public-profile'
     | '/app/social/business-portfolio'
     | '/app/social/compose'
-    | '/app/title-search/history'
-    | '/app/vision/library'
     | '/agents/$slug/p/$postSlug'
-    | '/api/public/hooks/close-auctions'
     | '/api/public/hooks/compliance-digest'
     | '/api/public/hooks/notify-sms'
     | '/api/public/hooks/outreach-reply'
-    | '/api/public/hooks/signwell'
-    | '/api/public/hooks/sync-distressed'
-    | '/api/public/hooks/sync-distressed-one'
     | '/api/public/hooks/twilio-sms'
     | '/api/public/hooks/twilio-voice'
     | '/api/public/webhooks/stripe'
@@ -831,7 +563,6 @@ export interface FileRouteTypes {
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
     | '/app/properties/'
-    | '/app/admin/contracts/$contractId'
     | '/api/public/oauth/meta/callback'
     | '/api/public/oauth/meta/start'
     | '/api/public/oauth/x/start'
@@ -853,14 +584,10 @@ export interface FileRouteTypes {
     | '/api/transcribe'
     | '/email/unsubscribe'
     | '/app/agent'
-    | '/app/auctions'
     | '/app/audit'
     | '/app/campaigns'
     | '/app/contacts'
-    | '/app/contracts'
-    | '/app/foreclosure-agent'
     | '/app/lead-lists'
-    | '/app/leads'
     | '/app/notifications'
     | '/app/opt-outs'
     | '/app/outreach'
@@ -868,39 +595,19 @@ export interface FileRouteTypes {
     | '/app/scoring'
     | '/app/settings'
     | '/app/social'
-    | '/app/title-search'
-    | '/app/videos'
-    | '/app/vision'
-    | '/app/watchlist'
     | '/billing/return'
-    | '/api/engines/tts'
-    | '/api/public/attom-health'
     | '/api/public/lead-notify'
     | '/lovable/email/suppression'
     | '/app'
-    | '/app/admin/contracts'
     | '/app/agent/$threadId'
-    | '/app/auctions/$auctionId'
-    | '/app/contracts/$contractId'
-    | '/app/leads/$leadId'
     | '/app/properties/$propertyId'
-    | '/app/properties/lookup'
-    | '/app/properties/lookup-history'
-    | '/app/properties/search'
-    | '/app/settings/integrations'
     | '/app/settings/public-profile'
     | '/app/social/business-portfolio'
     | '/app/social/compose'
-    | '/app/title-search/history'
-    | '/app/vision/library'
     | '/agents/$slug/p/$postSlug'
-    | '/api/public/hooks/close-auctions'
     | '/api/public/hooks/compliance-digest'
     | '/api/public/hooks/notify-sms'
     | '/api/public/hooks/outreach-reply'
-    | '/api/public/hooks/signwell'
-    | '/api/public/hooks/sync-distressed'
-    | '/api/public/hooks/sync-distressed-one'
     | '/api/public/hooks/twilio-sms'
     | '/api/public/hooks/twilio-voice'
     | '/api/public/webhooks/stripe'
@@ -908,7 +615,6 @@ export interface FileRouteTypes {
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
     | '/app/properties'
-    | '/app/admin/contracts/$contractId'
     | '/api/public/oauth/meta/callback'
     | '/api/public/oauth/meta/start'
     | '/api/public/oauth/x/start'
@@ -932,14 +638,10 @@ export interface FileRouteTypes {
     | '/api/transcribe'
     | '/email/unsubscribe'
     | '/_authenticated/app/agent'
-    | '/_authenticated/app/auctions'
     | '/_authenticated/app/audit'
     | '/_authenticated/app/campaigns'
     | '/_authenticated/app/contacts'
-    | '/_authenticated/app/contracts'
-    | '/_authenticated/app/foreclosure-agent'
     | '/_authenticated/app/lead-lists'
-    | '/_authenticated/app/leads'
     | '/_authenticated/app/notifications'
     | '/_authenticated/app/opt-outs'
     | '/_authenticated/app/outreach'
@@ -948,39 +650,19 @@ export interface FileRouteTypes {
     | '/_authenticated/app/scoring'
     | '/_authenticated/app/settings'
     | '/_authenticated/app/social'
-    | '/_authenticated/app/title-search'
-    | '/_authenticated/app/videos'
-    | '/_authenticated/app/vision'
-    | '/_authenticated/app/watchlist'
     | '/_authenticated/billing/return'
-    | '/api/engines/tts'
-    | '/api/public/attom-health'
     | '/api/public/lead-notify'
     | '/lovable/email/suppression'
     | '/_authenticated/app/'
-    | '/_authenticated/app/admin/contracts'
     | '/_authenticated/app/agent/$threadId'
-    | '/_authenticated/app/auctions/$auctionId'
-    | '/_authenticated/app/contracts/$contractId'
-    | '/_authenticated/app/leads/$leadId'
     | '/_authenticated/app/properties/$propertyId'
-    | '/_authenticated/app/properties/lookup'
-    | '/_authenticated/app/properties/lookup-history'
-    | '/_authenticated/app/properties/search'
-    | '/_authenticated/app/settings/integrations'
     | '/_authenticated/app/settings/public-profile'
     | '/_authenticated/app/social/business-portfolio'
     | '/_authenticated/app/social/compose'
-    | '/_authenticated/app/title-search/history'
-    | '/_authenticated/app/vision/library'
     | '/agents/$slug/p/$postSlug'
-    | '/api/public/hooks/close-auctions'
     | '/api/public/hooks/compliance-digest'
     | '/api/public/hooks/notify-sms'
     | '/api/public/hooks/outreach-reply'
-    | '/api/public/hooks/signwell'
-    | '/api/public/hooks/sync-distressed'
-    | '/api/public/hooks/sync-distressed-one'
     | '/api/public/hooks/twilio-sms'
     | '/api/public/hooks/twilio-voice'
     | '/api/public/webhooks/stripe'
@@ -988,7 +670,6 @@ export interface FileRouteTypes {
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
     | '/_authenticated/app/properties/'
-    | '/_authenticated/app/admin/contracts/$contractId'
     | '/api/public/oauth/meta/callback'
     | '/api/public/oauth/meta/start'
     | '/api/public/oauth/x/start'
@@ -1009,17 +690,11 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
-  ApiEnginesTtsRoute: typeof ApiEnginesTtsRoute
-  ApiPublicAttomHealthRoute: typeof ApiPublicAttomHealthRoute
   ApiPublicLeadNotifyRoute: typeof ApiPublicLeadNotifyRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
-  ApiPublicHooksCloseAuctionsRoute: typeof ApiPublicHooksCloseAuctionsRoute
   ApiPublicHooksComplianceDigestRoute: typeof ApiPublicHooksComplianceDigestRoute
   ApiPublicHooksNotifySmsRoute: typeof ApiPublicHooksNotifySmsRoute
   ApiPublicHooksOutreachReplyRoute: typeof ApiPublicHooksOutreachReplyRoute
-  ApiPublicHooksSignwellRoute: typeof ApiPublicHooksSignwellRoute
-  ApiPublicHooksSyncDistressedRoute: typeof ApiPublicHooksSyncDistressedRoute
-  ApiPublicHooksSyncDistressedOneRoute: typeof ApiPublicHooksSyncDistressedOneRoute
   ApiPublicHooksTwilioSmsRoute: typeof ApiPublicHooksTwilioSmsRoute
   ApiPublicHooksTwilioVoiceRoute: typeof ApiPublicHooksTwilioVoiceRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
@@ -1167,54 +842,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicLeadNotifyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/attom-health': {
-      id: '/api/public/attom-health'
-      path: '/api/public/attom-health'
-      fullPath: '/api/public/attom-health'
-      preLoaderRoute: typeof ApiPublicAttomHealthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/engines/tts': {
-      id: '/api/engines/tts'
-      path: '/api/engines/tts'
-      fullPath: '/api/engines/tts'
-      preLoaderRoute: typeof ApiEnginesTtsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/billing/return': {
       id: '/_authenticated/billing/return'
       path: '/return'
       fullPath: '/billing/return'
       preLoaderRoute: typeof AuthenticatedBillingReturnRouteImport
       parentRoute: typeof AuthenticatedBillingRoute
-    }
-    '/_authenticated/app/watchlist': {
-      id: '/_authenticated/app/watchlist'
-      path: '/watchlist'
-      fullPath: '/app/watchlist'
-      preLoaderRoute: typeof AuthenticatedAppWatchlistRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/vision': {
-      id: '/_authenticated/app/vision'
-      path: '/vision'
-      fullPath: '/app/vision'
-      preLoaderRoute: typeof AuthenticatedAppVisionRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/videos': {
-      id: '/_authenticated/app/videos'
-      path: '/videos'
-      fullPath: '/app/videos'
-      preLoaderRoute: typeof AuthenticatedAppVideosRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/title-search': {
-      id: '/_authenticated/app/title-search'
-      path: '/title-search'
-      fullPath: '/app/title-search'
-      preLoaderRoute: typeof AuthenticatedAppTitleSearchRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/social': {
       id: '/_authenticated/app/social'
@@ -1272,32 +905,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppNotificationsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_authenticated/app/leads': {
-      id: '/_authenticated/app/leads'
-      path: '/leads'
-      fullPath: '/app/leads'
-      preLoaderRoute: typeof AuthenticatedAppLeadsRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
     '/_authenticated/app/lead-lists': {
       id: '/_authenticated/app/lead-lists'
       path: '/lead-lists'
       fullPath: '/app/lead-lists'
       preLoaderRoute: typeof AuthenticatedAppLeadListsRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/foreclosure-agent': {
-      id: '/_authenticated/app/foreclosure-agent'
-      path: '/foreclosure-agent'
-      fullPath: '/app/foreclosure-agent'
-      preLoaderRoute: typeof AuthenticatedAppForeclosureAgentRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/contracts': {
-      id: '/_authenticated/app/contracts'
-      path: '/contracts'
-      fullPath: '/app/contracts'
-      preLoaderRoute: typeof AuthenticatedAppContractsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/contacts': {
@@ -1319,13 +931,6 @@ declare module '@tanstack/react-router' {
       path: '/audit'
       fullPath: '/app/audit'
       preLoaderRoute: typeof AuthenticatedAppAuditRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/auctions': {
-      id: '/_authenticated/app/auctions'
-      path: '/auctions'
-      fullPath: '/app/auctions'
-      preLoaderRoute: typeof AuthenticatedAppAuctionsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/agent': {
@@ -1384,27 +989,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksTwilioSmsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/sync-distressed-one': {
-      id: '/api/public/hooks/sync-distressed-one'
-      path: '/api/public/hooks/sync-distressed-one'
-      fullPath: '/api/public/hooks/sync-distressed-one'
-      preLoaderRoute: typeof ApiPublicHooksSyncDistressedOneRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/sync-distressed': {
-      id: '/api/public/hooks/sync-distressed'
-      path: '/api/public/hooks/sync-distressed'
-      fullPath: '/api/public/hooks/sync-distressed'
-      preLoaderRoute: typeof ApiPublicHooksSyncDistressedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/signwell': {
-      id: '/api/public/hooks/signwell'
-      path: '/api/public/hooks/signwell'
-      fullPath: '/api/public/hooks/signwell'
-      preLoaderRoute: typeof ApiPublicHooksSignwellRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/hooks/outreach-reply': {
       id: '/api/public/hooks/outreach-reply'
       path: '/api/public/hooks/outreach-reply'
@@ -1426,33 +1010,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksComplianceDigestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/hooks/close-auctions': {
-      id: '/api/public/hooks/close-auctions'
-      path: '/api/public/hooks/close-auctions'
-      fullPath: '/api/public/hooks/close-auctions'
-      preLoaderRoute: typeof ApiPublicHooksCloseAuctionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/agents/$slug/p/$postSlug': {
       id: '/agents/$slug/p/$postSlug'
       path: '/p/$postSlug'
       fullPath: '/agents/$slug/p/$postSlug'
       preLoaderRoute: typeof AgentsSlugPPostSlugRouteImport
       parentRoute: typeof AgentsSlugRoute
-    }
-    '/_authenticated/app/vision/library': {
-      id: '/_authenticated/app/vision/library'
-      path: '/library'
-      fullPath: '/app/vision/library'
-      preLoaderRoute: typeof AuthenticatedAppVisionLibraryRouteImport
-      parentRoute: typeof AuthenticatedAppVisionRoute
-    }
-    '/_authenticated/app/title-search/history': {
-      id: '/_authenticated/app/title-search/history'
-      path: '/history'
-      fullPath: '/app/title-search/history'
-      preLoaderRoute: typeof AuthenticatedAppTitleSearchHistoryRouteImport
-      parentRoute: typeof AuthenticatedAppTitleSearchRoute
     }
     '/_authenticated/app/social/compose': {
       id: '/_authenticated/app/social/compose'
@@ -1475,34 +1038,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSettingsPublicProfileRouteImport
       parentRoute: typeof AuthenticatedAppSettingsRoute
     }
-    '/_authenticated/app/settings/integrations': {
-      id: '/_authenticated/app/settings/integrations'
-      path: '/integrations'
-      fullPath: '/app/settings/integrations'
-      preLoaderRoute: typeof AuthenticatedAppSettingsIntegrationsRouteImport
-      parentRoute: typeof AuthenticatedAppSettingsRoute
-    }
-    '/_authenticated/app/properties/search': {
-      id: '/_authenticated/app/properties/search'
-      path: '/search'
-      fullPath: '/app/properties/search'
-      preLoaderRoute: typeof AuthenticatedAppPropertiesSearchRouteImport
-      parentRoute: typeof AuthenticatedAppPropertiesRoute
-    }
-    '/_authenticated/app/properties/lookup-history': {
-      id: '/_authenticated/app/properties/lookup-history'
-      path: '/lookup-history'
-      fullPath: '/app/properties/lookup-history'
-      preLoaderRoute: typeof AuthenticatedAppPropertiesLookupHistoryRouteImport
-      parentRoute: typeof AuthenticatedAppPropertiesRoute
-    }
-    '/_authenticated/app/properties/lookup': {
-      id: '/_authenticated/app/properties/lookup'
-      path: '/lookup'
-      fullPath: '/app/properties/lookup'
-      preLoaderRoute: typeof AuthenticatedAppPropertiesLookupRouteImport
-      parentRoute: typeof AuthenticatedAppPropertiesRoute
-    }
     '/_authenticated/app/properties/$propertyId': {
       id: '/_authenticated/app/properties/$propertyId'
       path: '/$propertyId'
@@ -1510,40 +1045,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppPropertiesPropertyIdRouteImport
       parentRoute: typeof AuthenticatedAppPropertiesRoute
     }
-    '/_authenticated/app/leads/$leadId': {
-      id: '/_authenticated/app/leads/$leadId'
-      path: '/$leadId'
-      fullPath: '/app/leads/$leadId'
-      preLoaderRoute: typeof AuthenticatedAppLeadsLeadIdRouteImport
-      parentRoute: typeof AuthenticatedAppLeadsRoute
-    }
-    '/_authenticated/app/contracts/$contractId': {
-      id: '/_authenticated/app/contracts/$contractId'
-      path: '/$contractId'
-      fullPath: '/app/contracts/$contractId'
-      preLoaderRoute: typeof AuthenticatedAppContractsContractIdRouteImport
-      parentRoute: typeof AuthenticatedAppContractsRoute
-    }
-    '/_authenticated/app/auctions/$auctionId': {
-      id: '/_authenticated/app/auctions/$auctionId'
-      path: '/$auctionId'
-      fullPath: '/app/auctions/$auctionId'
-      preLoaderRoute: typeof AuthenticatedAppAuctionsAuctionIdRouteImport
-      parentRoute: typeof AuthenticatedAppAuctionsRoute
-    }
     '/_authenticated/app/agent/$threadId': {
       id: '/_authenticated/app/agent/$threadId'
       path: '/$threadId'
       fullPath: '/app/agent/$threadId'
       preLoaderRoute: typeof AuthenticatedAppAgentThreadIdRouteImport
       parentRoute: typeof AuthenticatedAppAgentRoute
-    }
-    '/_authenticated/app/admin/contracts': {
-      id: '/_authenticated/app/admin/contracts'
-      path: '/admin/contracts'
-      fullPath: '/app/admin/contracts'
-      preLoaderRoute: typeof AuthenticatedAppAdminContractsRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
     }
     '/api/public/oauth/youtube/start': {
       id: '/api/public/oauth/youtube/start'
@@ -1573,13 +1080,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicOauthMetaCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/app/admin/contracts/$contractId': {
-      id: '/_authenticated/app/admin/contracts/$contractId'
-      path: '/$contractId'
-      fullPath: '/app/admin/contracts/$contractId'
-      preLoaderRoute: typeof AuthenticatedAppAdminContractsContractIdRouteImport
-      parentRoute: typeof AuthenticatedAppAdminContractsRoute
-    }
   }
 }
 
@@ -1596,54 +1096,8 @@ const AuthenticatedAppAgentRouteWithChildren =
     AuthenticatedAppAgentRouteChildren,
   )
 
-interface AuthenticatedAppAuctionsRouteChildren {
-  AuthenticatedAppAuctionsAuctionIdRoute: typeof AuthenticatedAppAuctionsAuctionIdRoute
-}
-
-const AuthenticatedAppAuctionsRouteChildren: AuthenticatedAppAuctionsRouteChildren =
-  {
-    AuthenticatedAppAuctionsAuctionIdRoute:
-      AuthenticatedAppAuctionsAuctionIdRoute,
-  }
-
-const AuthenticatedAppAuctionsRouteWithChildren =
-  AuthenticatedAppAuctionsRoute._addFileChildren(
-    AuthenticatedAppAuctionsRouteChildren,
-  )
-
-interface AuthenticatedAppContractsRouteChildren {
-  AuthenticatedAppContractsContractIdRoute: typeof AuthenticatedAppContractsContractIdRoute
-}
-
-const AuthenticatedAppContractsRouteChildren: AuthenticatedAppContractsRouteChildren =
-  {
-    AuthenticatedAppContractsContractIdRoute:
-      AuthenticatedAppContractsContractIdRoute,
-  }
-
-const AuthenticatedAppContractsRouteWithChildren =
-  AuthenticatedAppContractsRoute._addFileChildren(
-    AuthenticatedAppContractsRouteChildren,
-  )
-
-interface AuthenticatedAppLeadsRouteChildren {
-  AuthenticatedAppLeadsLeadIdRoute: typeof AuthenticatedAppLeadsLeadIdRoute
-}
-
-const AuthenticatedAppLeadsRouteChildren: AuthenticatedAppLeadsRouteChildren = {
-  AuthenticatedAppLeadsLeadIdRoute: AuthenticatedAppLeadsLeadIdRoute,
-}
-
-const AuthenticatedAppLeadsRouteWithChildren =
-  AuthenticatedAppLeadsRoute._addFileChildren(
-    AuthenticatedAppLeadsRouteChildren,
-  )
-
 interface AuthenticatedAppPropertiesRouteChildren {
   AuthenticatedAppPropertiesPropertyIdRoute: typeof AuthenticatedAppPropertiesPropertyIdRoute
-  AuthenticatedAppPropertiesLookupRoute: typeof AuthenticatedAppPropertiesLookupRoute
-  AuthenticatedAppPropertiesLookupHistoryRoute: typeof AuthenticatedAppPropertiesLookupHistoryRoute
-  AuthenticatedAppPropertiesSearchRoute: typeof AuthenticatedAppPropertiesSearchRoute
   AuthenticatedAppPropertiesIndexRoute: typeof AuthenticatedAppPropertiesIndexRoute
 }
 
@@ -1651,12 +1105,6 @@ const AuthenticatedAppPropertiesRouteChildren: AuthenticatedAppPropertiesRouteCh
   {
     AuthenticatedAppPropertiesPropertyIdRoute:
       AuthenticatedAppPropertiesPropertyIdRoute,
-    AuthenticatedAppPropertiesLookupRoute:
-      AuthenticatedAppPropertiesLookupRoute,
-    AuthenticatedAppPropertiesLookupHistoryRoute:
-      AuthenticatedAppPropertiesLookupHistoryRoute,
-    AuthenticatedAppPropertiesSearchRoute:
-      AuthenticatedAppPropertiesSearchRoute,
     AuthenticatedAppPropertiesIndexRoute: AuthenticatedAppPropertiesIndexRoute,
   }
 
@@ -1666,14 +1114,11 @@ const AuthenticatedAppPropertiesRouteWithChildren =
   )
 
 interface AuthenticatedAppSettingsRouteChildren {
-  AuthenticatedAppSettingsIntegrationsRoute: typeof AuthenticatedAppSettingsIntegrationsRoute
   AuthenticatedAppSettingsPublicProfileRoute: typeof AuthenticatedAppSettingsPublicProfileRoute
 }
 
 const AuthenticatedAppSettingsRouteChildren: AuthenticatedAppSettingsRouteChildren =
   {
-    AuthenticatedAppSettingsIntegrationsRoute:
-      AuthenticatedAppSettingsIntegrationsRoute,
     AuthenticatedAppSettingsPublicProfileRoute:
       AuthenticatedAppSettingsPublicProfileRoute,
   }
@@ -1700,60 +1145,12 @@ const AuthenticatedAppSocialRouteWithChildren =
     AuthenticatedAppSocialRouteChildren,
   )
 
-interface AuthenticatedAppTitleSearchRouteChildren {
-  AuthenticatedAppTitleSearchHistoryRoute: typeof AuthenticatedAppTitleSearchHistoryRoute
-}
-
-const AuthenticatedAppTitleSearchRouteChildren: AuthenticatedAppTitleSearchRouteChildren =
-  {
-    AuthenticatedAppTitleSearchHistoryRoute:
-      AuthenticatedAppTitleSearchHistoryRoute,
-  }
-
-const AuthenticatedAppTitleSearchRouteWithChildren =
-  AuthenticatedAppTitleSearchRoute._addFileChildren(
-    AuthenticatedAppTitleSearchRouteChildren,
-  )
-
-interface AuthenticatedAppVisionRouteChildren {
-  AuthenticatedAppVisionLibraryRoute: typeof AuthenticatedAppVisionLibraryRoute
-}
-
-const AuthenticatedAppVisionRouteChildren: AuthenticatedAppVisionRouteChildren =
-  {
-    AuthenticatedAppVisionLibraryRoute: AuthenticatedAppVisionLibraryRoute,
-  }
-
-const AuthenticatedAppVisionRouteWithChildren =
-  AuthenticatedAppVisionRoute._addFileChildren(
-    AuthenticatedAppVisionRouteChildren,
-  )
-
-interface AuthenticatedAppAdminContractsRouteChildren {
-  AuthenticatedAppAdminContractsContractIdRoute: typeof AuthenticatedAppAdminContractsContractIdRoute
-}
-
-const AuthenticatedAppAdminContractsRouteChildren: AuthenticatedAppAdminContractsRouteChildren =
-  {
-    AuthenticatedAppAdminContractsContractIdRoute:
-      AuthenticatedAppAdminContractsContractIdRoute,
-  }
-
-const AuthenticatedAppAdminContractsRouteWithChildren =
-  AuthenticatedAppAdminContractsRoute._addFileChildren(
-    AuthenticatedAppAdminContractsRouteChildren,
-  )
-
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAgentRoute: typeof AuthenticatedAppAgentRouteWithChildren
-  AuthenticatedAppAuctionsRoute: typeof AuthenticatedAppAuctionsRouteWithChildren
   AuthenticatedAppAuditRoute: typeof AuthenticatedAppAuditRoute
   AuthenticatedAppCampaignsRoute: typeof AuthenticatedAppCampaignsRoute
   AuthenticatedAppContactsRoute: typeof AuthenticatedAppContactsRoute
-  AuthenticatedAppContractsRoute: typeof AuthenticatedAppContractsRouteWithChildren
-  AuthenticatedAppForeclosureAgentRoute: typeof AuthenticatedAppForeclosureAgentRoute
   AuthenticatedAppLeadListsRoute: typeof AuthenticatedAppLeadListsRoute
-  AuthenticatedAppLeadsRoute: typeof AuthenticatedAppLeadsRouteWithChildren
   AuthenticatedAppNotificationsRoute: typeof AuthenticatedAppNotificationsRoute
   AuthenticatedAppOptOutsRoute: typeof AuthenticatedAppOptOutsRoute
   AuthenticatedAppOutreachRoute: typeof AuthenticatedAppOutreachRoute
@@ -1762,24 +1159,15 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppScoringRoute: typeof AuthenticatedAppScoringRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRouteWithChildren
   AuthenticatedAppSocialRoute: typeof AuthenticatedAppSocialRouteWithChildren
-  AuthenticatedAppTitleSearchRoute: typeof AuthenticatedAppTitleSearchRouteWithChildren
-  AuthenticatedAppVideosRoute: typeof AuthenticatedAppVideosRoute
-  AuthenticatedAppVisionRoute: typeof AuthenticatedAppVisionRouteWithChildren
-  AuthenticatedAppWatchlistRoute: typeof AuthenticatedAppWatchlistRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
-  AuthenticatedAppAdminContractsRoute: typeof AuthenticatedAppAdminContractsRouteWithChildren
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAgentRoute: AuthenticatedAppAgentRouteWithChildren,
-  AuthenticatedAppAuctionsRoute: AuthenticatedAppAuctionsRouteWithChildren,
   AuthenticatedAppAuditRoute: AuthenticatedAppAuditRoute,
   AuthenticatedAppCampaignsRoute: AuthenticatedAppCampaignsRoute,
   AuthenticatedAppContactsRoute: AuthenticatedAppContactsRoute,
-  AuthenticatedAppContractsRoute: AuthenticatedAppContractsRouteWithChildren,
-  AuthenticatedAppForeclosureAgentRoute: AuthenticatedAppForeclosureAgentRoute,
   AuthenticatedAppLeadListsRoute: AuthenticatedAppLeadListsRoute,
-  AuthenticatedAppLeadsRoute: AuthenticatedAppLeadsRouteWithChildren,
   AuthenticatedAppNotificationsRoute: AuthenticatedAppNotificationsRoute,
   AuthenticatedAppOptOutsRoute: AuthenticatedAppOptOutsRoute,
   AuthenticatedAppOutreachRoute: AuthenticatedAppOutreachRoute,
@@ -1788,14 +1176,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppScoringRoute: AuthenticatedAppScoringRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRouteWithChildren,
   AuthenticatedAppSocialRoute: AuthenticatedAppSocialRouteWithChildren,
-  AuthenticatedAppTitleSearchRoute:
-    AuthenticatedAppTitleSearchRouteWithChildren,
-  AuthenticatedAppVideosRoute: AuthenticatedAppVideosRoute,
-  AuthenticatedAppVisionRoute: AuthenticatedAppVisionRouteWithChildren,
-  AuthenticatedAppWatchlistRoute: AuthenticatedAppWatchlistRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
-  AuthenticatedAppAdminContractsRoute:
-    AuthenticatedAppAdminContractsRouteWithChildren,
 }
 
 const AuthenticatedAppRouteWithChildren =
@@ -1853,17 +1234,11 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
-  ApiEnginesTtsRoute: ApiEnginesTtsRoute,
-  ApiPublicAttomHealthRoute: ApiPublicAttomHealthRoute,
   ApiPublicLeadNotifyRoute: ApiPublicLeadNotifyRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
-  ApiPublicHooksCloseAuctionsRoute: ApiPublicHooksCloseAuctionsRoute,
   ApiPublicHooksComplianceDigestRoute: ApiPublicHooksComplianceDigestRoute,
   ApiPublicHooksNotifySmsRoute: ApiPublicHooksNotifySmsRoute,
   ApiPublicHooksOutreachReplyRoute: ApiPublicHooksOutreachReplyRoute,
-  ApiPublicHooksSignwellRoute: ApiPublicHooksSignwellRoute,
-  ApiPublicHooksSyncDistressedRoute: ApiPublicHooksSyncDistressedRoute,
-  ApiPublicHooksSyncDistressedOneRoute: ApiPublicHooksSyncDistressedOneRoute,
   ApiPublicHooksTwilioSmsRoute: ApiPublicHooksTwilioSmsRoute,
   ApiPublicHooksTwilioVoiceRoute: ApiPublicHooksTwilioVoiceRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,

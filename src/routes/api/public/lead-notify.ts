@@ -1,28 +1,27 @@
-import * as React from 'react'
-import { render } from '@react-email/components'
+// Public inbound inquiry endpoint.
+//
+// Slimmed during the SpaAI cut. What it used to do and no longer does:
+//   - insert into `leads` (cut) -> now writes to `inquiries`
+//   - parse city/neighborhood/state/zip out of the message body (location-parse, deleted)
+//   - render + enqueue the `new-lead-alert` email (template deleted)
+//
+// What it deliberately still does: honeypot, per-IP rate limiting, and the full
+// SMS consent record. Those are compliance-relevant, not funnel features.
+//
+// The route path stays /api/public/lead-notify so the public form keeps working;
+// renaming it is cosmetic and can happen with the rest of the branding pass.
+
 import { createClient } from '@supabase/supabase-js'
 import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
-import { TEMPLATES } from '@/lib/email-templates/registry'
-import { parseLocation } from '@/lib/location-parse'
-
-const SITE_NAME = 'PropAI'
-const SENDER_DOMAIN = 'notify.www.ainetworkagency.com'
-const FROM_DOMAIN = 'notify.www.ainetworkagency.com'
-const TEMPLATE_NAME = 'new-lead-alert'
 
 const schema = z.object({
   full_name: z.string().trim().min(1).max(120),
   email: z.string().trim().email().max(255),
   phone: z.string().trim().min(7).max(30),
-  company: z.string().trim().max(120).optional(),
   message: z.string().trim().max(2000).optional(),
   source: z.string().trim().max(80).optional(),
   sms_opt_in: z.boolean().optional(),
-  city: z.string().trim().max(80).optional(),
-  neighborhood: z.string().trim().max(120).optional(),
-  state: z.string().trim().length(2).optional(),
-  zip: z.string().trim().regex(/^\d{5}(-\d{4})?$/).optional(),
   // Honeypot: real users leave this empty. Bots fill every field.
   website: z.string().max(0).optional().or(z.literal('')),
 })
@@ -72,7 +71,7 @@ export const Route = createFileRoute('/api/public/lead-notify')({
         if (ip) {
           const since = new Date(Date.now() - 60 * 60 * 1000).toISOString()
           const { count } = await supabase
-            .from('leads')
+            .from('inquiries')
             .select('id', { count: 'exact', head: true })
             .eq('consent_ip', ip)
             .gte('created_at', since)
@@ -84,32 +83,19 @@ export const Route = createFileRoute('/api/public/lead-notify')({
           }
         }
 
-        // Parse city / neighborhood / state / zip from the free-text message
-        // and merge with whatever the form supplied. Form values win.
-        const parsedLoc = parseLocation(data.message)
-        const city = data.city ?? parsedLoc.city ?? null
-        const neighborhood = data.neighborhood ?? parsedLoc.neighborhood ?? null
-        const stateCode = (data.state ?? parsedLoc.state ?? null)?.toUpperCase() ?? null
-        const zip = data.zip ?? parsedLoc.zip ?? null
-
-        // Server-side insert (anon INSERT is revoked on the leads table).
+        // Server-side insert — anon has no direct access to this table.
         const { data: inserted, error: insertErr } = await supabase
-          .from('leads')
+          .from('inquiries')
           .insert({
             full_name: data.full_name,
             email: data.email,
             phone: data.phone,
-            company: data.company ?? null,
             message: data.message ?? null,
             source: data.source ?? 'website',
             sms_opt_in: data.sms_opt_in ?? false,
             sms_opt_in_at: data.sms_opt_in ? new Date().toISOString() : null,
             consent_ip: ip,
             consent_user_agent: ua,
-            city,
-            neighborhood,
-            state: stateCode,
-            zip,
           })
           .select('id')
           .single()
@@ -117,64 +103,7 @@ export const Route = createFileRoute('/api/public/lead-notify')({
           return Response.json({ error: 'Could not submit' }, { status: 500 })
         }
 
-        const template = TEMPLATES[TEMPLATE_NAME]
-        if (!template || !template.to) {
-          return Response.json({ success: true, lead_id: inserted.id })
-        }
-
-        const messageId = crypto.randomUUID()
-        const templateData = {
-          fullName: data.full_name,
-          email: data.email,
-          company: data.company,
-          message: data.message,
-          source: data.source || 'website',
-          submittedAt: new Date().toISOString(),
-        }
-
-        const element = React.createElement(template.component, templateData)
-        const html = await render(element)
-        const text = await render(element, { plainText: true })
-        const subject =
-          typeof template.subject === 'function'
-            ? template.subject(templateData)
-            : template.subject
-
-        await supabase.from('email_send_log').insert({
-          message_id: messageId,
-          template_name: TEMPLATE_NAME,
-          recipient_email: template.to,
-          status: 'pending',
-        })
-
-        const { error: enqueueError } = await supabase.rpc('enqueue_email', {
-          queue_name: 'transactional_emails',
-          payload: {
-            message_id: messageId,
-            to: template.to,
-            from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-            sender_domain: SENDER_DOMAIN,
-            subject,
-            html,
-            text,
-            purpose: 'transactional',
-            label: TEMPLATE_NAME,
-            idempotency_key: `lead-${messageId}`,
-            queued_at: new Date().toISOString(),
-          },
-        })
-
-        if (enqueueError) {
-          await supabase.from('email_send_log').insert({
-            message_id: messageId,
-            template_name: TEMPLATE_NAME,
-            recipient_email: template.to,
-            status: 'failed',
-            error_message: 'Failed to enqueue email',
-          })
-        }
-
-        return Response.json({ success: true, lead_id: inserted.id })
+        return Response.json({ success: true, inquiry_id: inserted.id })
       },
     },
   },

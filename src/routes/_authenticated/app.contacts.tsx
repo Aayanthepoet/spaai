@@ -4,10 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveOwnerContacts } from "@/lib/engines/contacts.functions";
-import { runSkipTrace, setContactDoNotContact } from "@/lib/skiptrace/skiptrace.functions";
+import { setContactDoNotContact } from "@/lib/owners/owners.functions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SkipTraceBadge } from "@/components/app/SkipTraceBadge";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/app/contacts")({
@@ -15,13 +14,10 @@ export const Route = createFileRoute("/_authenticated/app/contacts")({
   component: ContactsPage,
 });
 
-type PendingKind = "ai" | "skip" | "both";
-
 function ContactsPage() {
   const resolve = useServerFn(resolveOwnerContacts);
-  const skipTrace = useServerFn(runSkipTrace);
   const toggleDnc = useServerFn(setContactDoNotContact);
-  const [pending, setPending] = useState<{ id: string; kind: PendingKind } | null>(null);
+  const [pending, setPending] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
   async function onToggleDnc(contactId: string, next: boolean) {
@@ -42,7 +38,7 @@ function ContactsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("owners")
-        .select("id, full_name, entity_type, mailing_address, property_id, skip_trace_status, skip_trace_last_run_at, contacts(id, contact_type, value, confidence, notes, do_not_contact)")
+        .select("id, full_name, entity_type, mailing_address, property_id, contacts(id, contact_type, value, confidence, notes, do_not_contact)")
         .order("created_at", { ascending: false }).limit(50);
       if (error) throw error;
       return data;
@@ -50,7 +46,7 @@ function ContactsPage() {
   });
 
   async function runAi(ownerId: string) {
-    setPending({ id: ownerId, kind: "ai" });
+    setPending(ownerId);
     try {
       const res = await resolve({ data: { owner_id: ownerId } });
       toast.warning(`Generated ${res.resolved} SAMPLE candidate(s) — DO NOT CONTACT (unverified AI guesses)`);
@@ -62,41 +58,12 @@ function ContactsPage() {
     }
   }
 
-  async function runSkip(ownerId: string) {
-    setPending({ id: ownerId, kind: "skip" });
-    try {
-      const res = await skipTrace({ data: { owner_id: ownerId } });
-      toast.warning(`Generated ${res.inserted} SAMPLE contact(s) via ${res.provider} — DO NOT CONTACT (no real skip-trace provider connected)`);
-      await refetch();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed");
-    } finally {
-      setPending(null);
-    }
-  }
-
-  async function runBoth(ownerId: string) {
-    setPending({ id: ownerId, kind: "both" });
-    try {
-      const [skipRes, aiRes] = await Promise.all([
-        skipTrace({ data: { owner_id: ownerId } }),
-        resolve({ data: { owner_id: ownerId } }),
-      ]);
-      toast.warning(`Generated ${skipRes.inserted + aiRes.resolved} SAMPLE contact(s) — DO NOT CONTACT (unverified)`);
-      await refetch();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed");
-    } finally {
-      setPending(null);
-    }
-  }
-
   return (
     <div className="space-y-6">
       <div>
-        <div className="eyebrow inline-flex"><span className="eyebrow-dot" />Contact Resolver · skip-trace</div>
-        <h1 className="h-display text-[clamp(28px,4vw,44px)] mt-4">Skip-traced <span className="h-italic">contacts</span></h1>
-        <p className="text-[var(--w55)] mt-3 max-w-xl">Resolve phones, emails, and socials from your owner records. No real skip-trace data provider is connected yet — output below is sample data for UI testing only.</p>
+        <div className="eyebrow inline-flex"><span className="eyebrow-dot" />Contact Resolver</div>
+        <h1 className="h-display text-[clamp(28px,4vw,44px)] mt-4">Resolved <span className="h-italic">contacts</span></h1>
+        <p className="text-[var(--w55)] mt-3 max-w-xl">Resolve phones and emails from your owner records. Output below is AI-generated sample data for UI testing only.</p>
       </div>
 
       <div className="surface p-4 border border-amber-400/40 bg-amber-400/10">
@@ -104,7 +71,7 @@ function ContactsPage() {
           <div className="text-amber-300 font-semibold text-sm">⚠ Sample data only — do not contact</div>
         </div>
         <p className="text-xs text-[var(--w70)] mt-2 max-w-2xl">
-          No real skip-trace data provider (BatchData, IDI, TLO, etc.) is wired. Any phones, emails, or relatives produced by <em>Skip trace</em> or <em>AI resolve</em> are <strong>fabricated / LLM-guessed</strong>, automatically prefixed with <code className="font-mono">[SAMPLE — NOT VERIFIED]</code>, and forced to <strong>Do Not Contact</strong> so outreach and exports cannot dial or email them. To get real verified contacts, connect a skip-trace provider in Settings → Integrations.
+          Any phones or emails produced by <em>AI resolve</em> are <strong>LLM-guessed</strong>, automatically prefixed with <code className="font-mono">[SAMPLE — NOT VERIFIED]</code>, and forced to <strong>Do Not Contact</strong> so outreach and exports cannot dial or email them.
         </p>
       </div>
 
@@ -114,26 +81,19 @@ function ContactsPage() {
           <div className="surface p-6 text-sm text-[var(--w55)]">No owners yet. Add owners from the Properties page.</div>
         )}
         {(owners ?? []).map((o) => {
-          const isPending = pending?.id === o.id;
+          const isPending = pending === o.id;
           return (
             <div key={o.id} className="surface p-4">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="space-y-1">
                   <div className="font-semibold flex items-center gap-2">
                     {o.full_name ?? "Unknown owner"}
-                    <SkipTraceBadge status={o.skip_trace_status} lastRunAt={o.skip_trace_last_run_at} />
                   </div>
                   <div className="text-xs text-[var(--w55)]">{o.entity_type ?? "individual"} · {o.mailing_address ?? ""}</div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Button size="sm" variant="outline" disabled={isPending} onClick={() => runSkip(o.id)} title="Generates sample (unverified) contacts — DNC enforced">
-                    {isPending && pending?.kind === "skip" ? "Tracing…" : "Generate sample (skip trace)"}
-                  </Button>
                   <Button size="sm" variant="outline" disabled={isPending} onClick={() => runAi(o.id)} title="LLM-guessed candidates — DNC enforced">
-                    {isPending && pending?.kind === "ai" ? "Resolving…" : "Generate sample (AI guess)"}
-                  </Button>
-                  <Button size="sm" disabled={isPending} onClick={() => runBoth(o.id)}>
-                    {isPending && pending?.kind === "both" ? "Running…" : "Run both (sample)"}
+                    {isPending ? "Resolving…" : "Generate sample (AI guess)"}
                   </Button>
                 </div>
               </div>

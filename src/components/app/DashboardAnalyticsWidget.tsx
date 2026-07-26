@@ -42,7 +42,6 @@ export function DashboardAnalyticsWidget() {
   });
 
   const exportSeries = useMemo(() => data?.exports.daily.map((d) => d.count) ?? [], [data]);
-  const skipSeries = useMemo(() => data?.skipTraces.daily.map((d) => d.count) ?? [], [data]);
 
   if (isLoading) {
     return (
@@ -73,13 +72,12 @@ export function DashboardAnalyticsWidget() {
         <TrendingUp className="h-5 w-5 text-cyan" />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <Link
           to="/app/owners"
-          search={{ status: "pending" }}
           className="group rounded-lg p-4 text-left hover:ring-1 hover:ring-cyan/40 transition"
           style={{ background: "var(--w05)" }}
-          title="Open owners pending skip trace"
+          title="Open owners"
         >
           <div className="flex items-center justify-between text-xs uppercase tracking-widest text-[var(--w55)]">
             <span className="flex items-center gap-2"><Users className="h-3.5 w-3.5" /> Owners</span>
@@ -87,32 +85,7 @@ export function DashboardAnalyticsWidget() {
           </div>
           <div className="text-3xl font-bold mt-2">{data.owners.total.toLocaleString()}</div>
           <div className="text-xs text-[var(--w55)] mt-1 underline decoration-dotted underline-offset-2">
-            {data.owners.pending.toLocaleString()} pending trace →
-          </div>
-        </Link>
-
-        <Link
-          to="/app/owners"
-          search={{ status: "traced" }}
-          className="group rounded-lg p-4 text-left hover:ring-1 hover:ring-emerald-400/40 transition"
-          style={{ background: "var(--w05)" }}
-          title="Open successfully traced owners"
-        >
-          <div className="flex items-center justify-between text-xs uppercase tracking-widest text-[var(--w55)]">
-            <span className="flex items-center gap-2"><Activity className="h-3.5 w-3.5" /> Skip trace success</span>
-            <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition" />
-          </div>
-          <div className="text-3xl font-bold mt-2 text-emerald-400">
-            {pct(data.owners.successRate)}
-          </div>
-          <div className="mt-2 h-2 rounded-full overflow-hidden" style={{ background: "var(--w10)" }}>
-            <div
-              className="h-full bg-emerald-400"
-              style={{ width: `${Math.round(data.owners.successRate * 100)}%` }}
-            />
-          </div>
-          <div className="text-xs text-[var(--w55)] mt-2 underline decoration-dotted underline-offset-2">
-            {data.owners.traced.toLocaleString()} of {data.owners.total.toLocaleString()} traced →
+            {data.contacts.verified.toLocaleString()} verified contacts →
           </div>
         </Link>
 
@@ -138,27 +111,18 @@ export function DashboardAnalyticsWidget() {
           </div>
         </Link>
 
-        <Link
-          to="/app/audit"
-          search={{ action: "skiptrace.run" }}
-          className="group rounded-lg p-4 text-left hover:ring-1 hover:ring-purple-400/40 transition"
+        <div
+          className="rounded-lg p-4 text-left"
           style={{ background: "var(--w05)" }}
-          title="View skip trace events in the audit log"
         >
           <div className="flex items-center justify-between text-xs uppercase tracking-widest text-[var(--w55)]">
-            <span className="flex items-center gap-2"><Activity className="h-3.5 w-3.5" /> Skip traces (30d)</span>
-            <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition" />
+            <span className="flex items-center gap-2"><Activity className="h-3.5 w-3.5" /> Contacts</span>
           </div>
-          <div className="text-3xl font-bold mt-2 text-purple-300">
-            {data.skipTraces.last30Days.toLocaleString()}
+          <div className="text-3xl font-bold mt-2">{data.contacts.total.toLocaleString()}</div>
+          <div className="text-xs text-[var(--w55)] mt-1">
+            {data.contacts.verified.toLocaleString()} verified
           </div>
-          <div className="text-xs text-[var(--w55)] mt-1 underline decoration-dotted underline-offset-2">
-            {data.contacts.verified.toLocaleString()} verified contacts →
-          </div>
-          <div className="mt-2">
-            <Sparkline data={skipSeries} color="#a78bfa" height={32} />
-          </div>
-        </Link>
+        </div>
       </div>
     </section>
   );

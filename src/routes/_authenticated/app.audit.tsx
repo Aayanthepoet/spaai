@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { ScrollText, Download, Search, Send, FileText, Loader2, Lock } from "lucide-react";
+import { ScrollText, Download, Send, FileText, Loader2, Lock } from "lucide-react";
 import { listAuditEvents, logAuditEvent, exportAuditEvents, getMyAuditPermissions } from "@/lib/audit/audit.functions";
 
 export const Route = createFileRoute("/_authenticated/app/audit")({
@@ -18,7 +18,6 @@ export const Route = createFileRoute("/_authenticated/app/audit")({
 
 const ACTION_META: Record<string, { label: string; icon: typeof FileText; color: string }> = {
   "export.csv": { label: "CSV Export", icon: Download, color: "text-cyan" },
-  "skiptrace.run": { label: "Skip trace", icon: Search, color: "text-emerald-400" },
   "outreach.send": { label: "Outreach sent", icon: Send, color: "text-purple-400" },
 };
 
@@ -225,7 +224,6 @@ function AuditPage() {
           {[
             { k: "all", label: "All actions" },
             { k: "export.csv", label: "Exports" },
-            { k: "skiptrace.run", label: "Skip traces" },
             { k: "outreach.send", label: "Outreach" },
           ].map((opt) => (
             <button

@@ -107,7 +107,7 @@ function ScoringPage() {
         <div className="surface p-6 text-[var(--w55)]">Loading…</div>
       ) : properties.length === 0 ? (
         <div className="surface p-6 text-[var(--w55)]">
-          No properties yet. Add some from <Link to="/app/properties/search" className="underline">Find Distressed</Link>.
+          No properties yet. Import some from the <Link to="/app/properties" className="underline">Properties</Link> page.
         </div>
       ) : (
         <div className="surface divide-y divide-border">
