@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Plus, Search, MapPin, DollarSign, Home, X, SlidersHorizontal } from "lucide-react";
-import { ImportLeadsDialog } from "@/components/properties/ImportLeadsDialog";
+import { ImportLeadsDialog } from "@/components/schools/ImportLeadsDialog";
 
 type DistressFilter = "all" | "preforeclosure" | "reo" | "auction" | "tax_lien" | "tax_delinquent" | "fsbo_stale" | "vacant" | "absentee";
 type ScoreFilter = "all" | "hot" | "warm" | "cold";
@@ -54,8 +54,8 @@ const PRICE_CHIPS: { value: PriceFilter; label: string }[] = [
   { value: "o1m", label: "$1M+" },
 ];
 
-export const Route = createFileRoute("/_authenticated/app/properties/")({
-  head: () => ({ meta: [{ title: "Properties — PropAI" }] }),
+export const Route = createFileRoute("/_authenticated/app/schools/")({
+  head: () => ({ meta: [{ title: "Schools — PropAI" }] }),
   component: PropertiesPage,
 });
 
@@ -350,14 +350,14 @@ function PropertiesPage() {
     </Dialog>
   );
 
-  if (isLoading) return <div className="text-[var(--w55)] p-8">Loading properties…</div>;
+  if (isLoading) return <div className="text-[var(--w55)] p-8">Loading schools…</div>;
 
   if (!allData?.length) {
     return (
       <EmptyModule
-        eyebrow="Properties"
-        title={<>Property <span className="h-italic">intelligence</span></>}
-        description="Nationwide property records with equity, distress signals, and AI lead scoring."
+        eyebrow="Schools"
+        title={<>School <span className="h-italic">intelligence</span></>}
+        description="Your school list with district, enrollment, and AI booking-likelihood scoring."
         cta={
           <div className="flex flex-wrap items-center justify-center gap-4">
             <ImportLeadsDialog />
@@ -389,7 +389,7 @@ function PropertiesPage() {
       <div className="flex justify-between items-center mb-6 gap-3 flex-wrap">
         <div>
           <div className="eyebrow inline-flex">
-            <span className="eyebrow-dot" /> Properties
+            <span className="eyebrow-dot" /> Schools
           </div>
           <h1 className="h-display text-[clamp(28px,4vw,44px)] mt-2">Workspace</h1>
         </div>
@@ -461,7 +461,7 @@ function PropertiesPage() {
 
         <div className="flex items-center justify-between pt-1 text-xs text-[var(--w55)]">
           <span>
-            Showing <span className="text-white font-semibold">{data.length}</span> of {allData.length} properties
+            Showing <span className="text-white font-semibold">{data.length}</span> of {allData.length} schools
             {activeFilterCount > 0 && <span className="ml-2 text-cyan">· {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} active</span>}
           </span>
           {(activeFilterCount > 0 || searchText) && (
@@ -479,7 +479,7 @@ function PropertiesPage() {
         {data.length === 0 ? (
           <div className="p-12 text-center text-[var(--w55)]">
             <Home className="w-8 h-8 mx-auto mb-3 text-[var(--w35)]" />
-            <p className="text-sm">No properties match your filters.</p>
+            <p className="text-sm">No schools match your filters.</p>
             <button onClick={clearFilters} className="mt-3 text-cyan text-xs hover:underline">
               Clear all filters
             </button>
@@ -499,13 +499,13 @@ function PropertiesPage() {
               {data.map((p) => (
                 <tr
                   key={p.id}
-                  onClick={() => navigate({ to: "/app/properties/$propertyId", params: { propertyId: p.id } })}
+                  onClick={() => navigate({ to: "/app/schools/$schoolId", params: { schoolId: p.id } })}
                   className="border-t border-border hover:bg-[rgba(255,255,255,.02)] transition-colors cursor-pointer"
                 >
                   <td className="p-4">
                     <Link
-                      to="/app/properties/$propertyId"
-                      params={{ propertyId: p.id }}
+                      to="/app/schools/$schoolId"
+                      params={{ schoolId: p.id }}
                       onClick={(e) => e.stopPropagation()}
                       className="text-cyan hover:underline font-medium"
                     >

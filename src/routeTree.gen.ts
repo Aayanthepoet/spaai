@@ -32,7 +32,7 @@ import { Route as AuthenticatedBillingReturnRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppSocialRouteImport } from './routes/_authenticated/app.social'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app.settings'
 import { Route as AuthenticatedAppScoringRouteImport } from './routes/_authenticated/app.scoring'
-import { Route as AuthenticatedAppPropertiesRouteImport } from './routes/_authenticated/app.properties'
+import { Route as AuthenticatedAppSchoolsRouteImport } from './routes/_authenticated/app.schools'
 import { Route as AuthenticatedAppOwnersRouteImport } from './routes/_authenticated/app.owners'
 import { Route as AuthenticatedAppOutreachRouteImport } from './routes/_authenticated/app.outreach'
 import { Route as AuthenticatedAppOptOutsRouteImport } from './routes/_authenticated/app.opt-outs'
@@ -42,7 +42,7 @@ import { Route as AuthenticatedAppContactsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppCampaignsRouteImport } from './routes/_authenticated/app.campaigns'
 import { Route as AuthenticatedAppAuditRouteImport } from './routes/_authenticated/app.audit'
 import { Route as AuthenticatedAppAgentRouteImport } from './routes/_authenticated/app.agent'
-import { Route as AuthenticatedAppPropertiesIndexRouteImport } from './routes/_authenticated/app.properties.index'
+import { Route as AuthenticatedAppSchoolsIndexRouteImport } from './routes/_authenticated/app.schools.index'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -56,7 +56,7 @@ import { Route as AgentsSlugPPostSlugRouteImport } from './routes/agents.$slug.p
 import { Route as AuthenticatedAppSocialComposeRouteImport } from './routes/_authenticated/app.social.compose'
 import { Route as AuthenticatedAppSocialBusinessPortfolioRouteImport } from './routes/_authenticated/app.social.business-portfolio'
 import { Route as AuthenticatedAppSettingsPublicProfileRouteImport } from './routes/_authenticated/app.settings.public-profile'
-import { Route as AuthenticatedAppPropertiesPropertyIdRouteImport } from './routes/_authenticated/app.properties.$propertyId'
+import { Route as AuthenticatedAppSchoolsSchoolIdRouteImport } from './routes/_authenticated/app.schools.$schoolId'
 import { Route as AuthenticatedAppAgentThreadIdRouteImport } from './routes/_authenticated/app.agent.$threadId'
 import { Route as ApiPublicOauthYoutubeStartRouteImport } from './routes/api/public/oauth/youtube.start'
 import { Route as ApiPublicOauthXStartRouteImport } from './routes/api/public/oauth/x.start'
@@ -179,12 +179,11 @@ const AuthenticatedAppScoringRoute = AuthenticatedAppScoringRouteImport.update({
   path: '/scoring',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
-const AuthenticatedAppPropertiesRoute =
-  AuthenticatedAppPropertiesRouteImport.update({
-    id: '/properties',
-    path: '/properties',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
+const AuthenticatedAppSchoolsRoute = AuthenticatedAppSchoolsRouteImport.update({
+  id: '/schools',
+  path: '/schools',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppOwnersRoute = AuthenticatedAppOwnersRouteImport.update({
   id: '/owners',
   path: '/owners',
@@ -235,11 +234,11 @@ const AuthenticatedAppAgentRoute = AuthenticatedAppAgentRouteImport.update({
   path: '/agent',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
-const AuthenticatedAppPropertiesIndexRoute =
-  AuthenticatedAppPropertiesIndexRouteImport.update({
+const AuthenticatedAppSchoolsIndexRoute =
+  AuthenticatedAppSchoolsIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => AuthenticatedAppPropertiesRoute,
+    getParentRoute: () => AuthenticatedAppSchoolsRoute,
   } as any)
 const LovableEmailTransactionalSendRoute =
   LovableEmailTransactionalSendRouteImport.update({
@@ -315,11 +314,11 @@ const AuthenticatedAppSettingsPublicProfileRoute =
     path: '/public-profile',
     getParentRoute: () => AuthenticatedAppSettingsRoute,
   } as any)
-const AuthenticatedAppPropertiesPropertyIdRoute =
-  AuthenticatedAppPropertiesPropertyIdRouteImport.update({
-    id: '/$propertyId',
-    path: '/$propertyId',
-    getParentRoute: () => AuthenticatedAppPropertiesRoute,
+const AuthenticatedAppSchoolsSchoolIdRoute =
+  AuthenticatedAppSchoolsSchoolIdRouteImport.update({
+    id: '/$schoolId',
+    path: '/$schoolId',
+    getParentRoute: () => AuthenticatedAppSchoolsRoute,
   } as any)
 const AuthenticatedAppAgentThreadIdRoute =
   AuthenticatedAppAgentThreadIdRouteImport.update({
@@ -375,7 +374,7 @@ export interface FileRoutesByFullPath {
   '/app/opt-outs': typeof AuthenticatedAppOptOutsRoute
   '/app/outreach': typeof AuthenticatedAppOutreachRoute
   '/app/owners': typeof AuthenticatedAppOwnersRoute
-  '/app/properties': typeof AuthenticatedAppPropertiesRouteWithChildren
+  '/app/schools': typeof AuthenticatedAppSchoolsRouteWithChildren
   '/app/scoring': typeof AuthenticatedAppScoringRoute
   '/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/app/social': typeof AuthenticatedAppSocialRouteWithChildren
@@ -384,7 +383,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/app/': typeof AuthenticatedAppIndexRoute
   '/app/agent/$threadId': typeof AuthenticatedAppAgentThreadIdRoute
-  '/app/properties/$propertyId': typeof AuthenticatedAppPropertiesPropertyIdRoute
+  '/app/schools/$schoolId': typeof AuthenticatedAppSchoolsSchoolIdRoute
   '/app/settings/public-profile': typeof AuthenticatedAppSettingsPublicProfileRoute
   '/app/social/business-portfolio': typeof AuthenticatedAppSocialBusinessPortfolioRoute
   '/app/social/compose': typeof AuthenticatedAppSocialComposeRoute
@@ -398,7 +397,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
-  '/app/properties/': typeof AuthenticatedAppPropertiesIndexRoute
+  '/app/schools/': typeof AuthenticatedAppSchoolsIndexRoute
   '/api/public/oauth/meta/callback': typeof ApiPublicOauthMetaCallbackRoute
   '/api/public/oauth/meta/start': typeof ApiPublicOauthMetaStartRoute
   '/api/public/oauth/x/start': typeof ApiPublicOauthXStartRoute
@@ -436,7 +435,7 @@ export interface FileRoutesByTo {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/app': typeof AuthenticatedAppIndexRoute
   '/app/agent/$threadId': typeof AuthenticatedAppAgentThreadIdRoute
-  '/app/properties/$propertyId': typeof AuthenticatedAppPropertiesPropertyIdRoute
+  '/app/schools/$schoolId': typeof AuthenticatedAppSchoolsSchoolIdRoute
   '/app/settings/public-profile': typeof AuthenticatedAppSettingsPublicProfileRoute
   '/app/social/business-portfolio': typeof AuthenticatedAppSocialBusinessPortfolioRoute
   '/app/social/compose': typeof AuthenticatedAppSocialComposeRoute
@@ -450,7 +449,7 @@ export interface FileRoutesByTo {
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
-  '/app/properties': typeof AuthenticatedAppPropertiesIndexRoute
+  '/app/schools': typeof AuthenticatedAppSchoolsIndexRoute
   '/api/public/oauth/meta/callback': typeof ApiPublicOauthMetaCallbackRoute
   '/api/public/oauth/meta/start': typeof ApiPublicOauthMetaStartRoute
   '/api/public/oauth/x/start': typeof ApiPublicOauthXStartRoute
@@ -483,7 +482,7 @@ export interface FileRoutesById {
   '/_authenticated/app/opt-outs': typeof AuthenticatedAppOptOutsRoute
   '/_authenticated/app/outreach': typeof AuthenticatedAppOutreachRoute
   '/_authenticated/app/owners': typeof AuthenticatedAppOwnersRoute
-  '/_authenticated/app/properties': typeof AuthenticatedAppPropertiesRouteWithChildren
+  '/_authenticated/app/schools': typeof AuthenticatedAppSchoolsRouteWithChildren
   '/_authenticated/app/scoring': typeof AuthenticatedAppScoringRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRouteWithChildren
   '/_authenticated/app/social': typeof AuthenticatedAppSocialRouteWithChildren
@@ -492,7 +491,7 @@ export interface FileRoutesById {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
   '/_authenticated/app/agent/$threadId': typeof AuthenticatedAppAgentThreadIdRoute
-  '/_authenticated/app/properties/$propertyId': typeof AuthenticatedAppPropertiesPropertyIdRoute
+  '/_authenticated/app/schools/$schoolId': typeof AuthenticatedAppSchoolsSchoolIdRoute
   '/_authenticated/app/settings/public-profile': typeof AuthenticatedAppSettingsPublicProfileRoute
   '/_authenticated/app/social/business-portfolio': typeof AuthenticatedAppSocialBusinessPortfolioRoute
   '/_authenticated/app/social/compose': typeof AuthenticatedAppSocialComposeRoute
@@ -506,7 +505,7 @@ export interface FileRoutesById {
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
-  '/_authenticated/app/properties/': typeof AuthenticatedAppPropertiesIndexRoute
+  '/_authenticated/app/schools/': typeof AuthenticatedAppSchoolsIndexRoute
   '/api/public/oauth/meta/callback': typeof ApiPublicOauthMetaCallbackRoute
   '/api/public/oauth/meta/start': typeof ApiPublicOauthMetaStartRoute
   '/api/public/oauth/x/start': typeof ApiPublicOauthXStartRoute
@@ -539,7 +538,7 @@ export interface FileRouteTypes {
     | '/app/opt-outs'
     | '/app/outreach'
     | '/app/owners'
-    | '/app/properties'
+    | '/app/schools'
     | '/app/scoring'
     | '/app/settings'
     | '/app/social'
@@ -548,7 +547,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/app/'
     | '/app/agent/$threadId'
-    | '/app/properties/$propertyId'
+    | '/app/schools/$schoolId'
     | '/app/settings/public-profile'
     | '/app/social/business-portfolio'
     | '/app/social/compose'
@@ -562,7 +561,7 @@ export interface FileRouteTypes {
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
-    | '/app/properties/'
+    | '/app/schools/'
     | '/api/public/oauth/meta/callback'
     | '/api/public/oauth/meta/start'
     | '/api/public/oauth/x/start'
@@ -600,7 +599,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/app'
     | '/app/agent/$threadId'
-    | '/app/properties/$propertyId'
+    | '/app/schools/$schoolId'
     | '/app/settings/public-profile'
     | '/app/social/business-portfolio'
     | '/app/social/compose'
@@ -614,7 +613,7 @@ export interface FileRouteTypes {
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
-    | '/app/properties'
+    | '/app/schools'
     | '/api/public/oauth/meta/callback'
     | '/api/public/oauth/meta/start'
     | '/api/public/oauth/x/start'
@@ -646,7 +645,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/opt-outs'
     | '/_authenticated/app/outreach'
     | '/_authenticated/app/owners'
-    | '/_authenticated/app/properties'
+    | '/_authenticated/app/schools'
     | '/_authenticated/app/scoring'
     | '/_authenticated/app/settings'
     | '/_authenticated/app/social'
@@ -655,7 +654,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/_authenticated/app/'
     | '/_authenticated/app/agent/$threadId'
-    | '/_authenticated/app/properties/$propertyId'
+    | '/_authenticated/app/schools/$schoolId'
     | '/_authenticated/app/settings/public-profile'
     | '/_authenticated/app/social/business-portfolio'
     | '/_authenticated/app/social/compose'
@@ -669,7 +668,7 @@ export interface FileRouteTypes {
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
-    | '/_authenticated/app/properties/'
+    | '/_authenticated/app/schools/'
     | '/api/public/oauth/meta/callback'
     | '/api/public/oauth/meta/start'
     | '/api/public/oauth/x/start'
@@ -870,11 +869,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppScoringRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_authenticated/app/properties': {
-      id: '/_authenticated/app/properties'
-      path: '/properties'
-      fullPath: '/app/properties'
-      preLoaderRoute: typeof AuthenticatedAppPropertiesRouteImport
+    '/_authenticated/app/schools': {
+      id: '/_authenticated/app/schools'
+      path: '/schools'
+      fullPath: '/app/schools'
+      preLoaderRoute: typeof AuthenticatedAppSchoolsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/owners': {
@@ -940,12 +939,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAgentRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_authenticated/app/properties/': {
-      id: '/_authenticated/app/properties/'
+    '/_authenticated/app/schools/': {
+      id: '/_authenticated/app/schools/'
       path: '/'
-      fullPath: '/app/properties/'
-      preLoaderRoute: typeof AuthenticatedAppPropertiesIndexRouteImport
-      parentRoute: typeof AuthenticatedAppPropertiesRoute
+      fullPath: '/app/schools/'
+      preLoaderRoute: typeof AuthenticatedAppSchoolsIndexRouteImport
+      parentRoute: typeof AuthenticatedAppSchoolsRoute
     }
     '/lovable/email/transactional/send': {
       id: '/lovable/email/transactional/send'
@@ -1038,12 +1037,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSettingsPublicProfileRouteImport
       parentRoute: typeof AuthenticatedAppSettingsRoute
     }
-    '/_authenticated/app/properties/$propertyId': {
-      id: '/_authenticated/app/properties/$propertyId'
-      path: '/$propertyId'
-      fullPath: '/app/properties/$propertyId'
-      preLoaderRoute: typeof AuthenticatedAppPropertiesPropertyIdRouteImport
-      parentRoute: typeof AuthenticatedAppPropertiesRoute
+    '/_authenticated/app/schools/$schoolId': {
+      id: '/_authenticated/app/schools/$schoolId'
+      path: '/$schoolId'
+      fullPath: '/app/schools/$schoolId'
+      preLoaderRoute: typeof AuthenticatedAppSchoolsSchoolIdRouteImport
+      parentRoute: typeof AuthenticatedAppSchoolsRoute
     }
     '/_authenticated/app/agent/$threadId': {
       id: '/_authenticated/app/agent/$threadId'
@@ -1096,21 +1095,20 @@ const AuthenticatedAppAgentRouteWithChildren =
     AuthenticatedAppAgentRouteChildren,
   )
 
-interface AuthenticatedAppPropertiesRouteChildren {
-  AuthenticatedAppPropertiesPropertyIdRoute: typeof AuthenticatedAppPropertiesPropertyIdRoute
-  AuthenticatedAppPropertiesIndexRoute: typeof AuthenticatedAppPropertiesIndexRoute
+interface AuthenticatedAppSchoolsRouteChildren {
+  AuthenticatedAppSchoolsSchoolIdRoute: typeof AuthenticatedAppSchoolsSchoolIdRoute
+  AuthenticatedAppSchoolsIndexRoute: typeof AuthenticatedAppSchoolsIndexRoute
 }
 
-const AuthenticatedAppPropertiesRouteChildren: AuthenticatedAppPropertiesRouteChildren =
+const AuthenticatedAppSchoolsRouteChildren: AuthenticatedAppSchoolsRouteChildren =
   {
-    AuthenticatedAppPropertiesPropertyIdRoute:
-      AuthenticatedAppPropertiesPropertyIdRoute,
-    AuthenticatedAppPropertiesIndexRoute: AuthenticatedAppPropertiesIndexRoute,
+    AuthenticatedAppSchoolsSchoolIdRoute: AuthenticatedAppSchoolsSchoolIdRoute,
+    AuthenticatedAppSchoolsIndexRoute: AuthenticatedAppSchoolsIndexRoute,
   }
 
-const AuthenticatedAppPropertiesRouteWithChildren =
-  AuthenticatedAppPropertiesRoute._addFileChildren(
-    AuthenticatedAppPropertiesRouteChildren,
+const AuthenticatedAppSchoolsRouteWithChildren =
+  AuthenticatedAppSchoolsRoute._addFileChildren(
+    AuthenticatedAppSchoolsRouteChildren,
   )
 
 interface AuthenticatedAppSettingsRouteChildren {
@@ -1155,7 +1153,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppOptOutsRoute: typeof AuthenticatedAppOptOutsRoute
   AuthenticatedAppOutreachRoute: typeof AuthenticatedAppOutreachRoute
   AuthenticatedAppOwnersRoute: typeof AuthenticatedAppOwnersRoute
-  AuthenticatedAppPropertiesRoute: typeof AuthenticatedAppPropertiesRouteWithChildren
+  AuthenticatedAppSchoolsRoute: typeof AuthenticatedAppSchoolsRouteWithChildren
   AuthenticatedAppScoringRoute: typeof AuthenticatedAppScoringRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRouteWithChildren
   AuthenticatedAppSocialRoute: typeof AuthenticatedAppSocialRouteWithChildren
@@ -1172,7 +1170,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppOptOutsRoute: AuthenticatedAppOptOutsRoute,
   AuthenticatedAppOutreachRoute: AuthenticatedAppOutreachRoute,
   AuthenticatedAppOwnersRoute: AuthenticatedAppOwnersRoute,
-  AuthenticatedAppPropertiesRoute: AuthenticatedAppPropertiesRouteWithChildren,
+  AuthenticatedAppSchoolsRoute: AuthenticatedAppSchoolsRouteWithChildren,
   AuthenticatedAppScoringRoute: AuthenticatedAppScoringRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRouteWithChildren,
   AuthenticatedAppSocialRoute: AuthenticatedAppSocialRouteWithChildren,

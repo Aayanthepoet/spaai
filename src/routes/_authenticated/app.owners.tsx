@@ -7,7 +7,7 @@ import { logAuditEvent } from "@/lib/audit/audit.functions";
 import { ChevronDown, ChevronRight, Phone, Mail, Users, Loader2, Download } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/owners")({
-  head: () => ({ meta: [{ title: "Owners — PropAI" }] }),
+  head: () => ({ meta: [{ title: "School Staff — PropAI" }] }),
   component: OwnersPage,
   errorComponent: ({ error }) => <div className="p-6 text-red-400">{error.message}</div>,
   notFoundComponent: () => <div className="p-6">Not found.</div>,
@@ -143,9 +143,9 @@ function OwnersPage() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="h-display text-[clamp(28px,4vw,44px)]">Owners</h1>
+          <h1 className="h-display text-[clamp(28px,4vw,44px)]">School Staff</h1>
           <p className="text-[var(--w55)] text-sm mt-1">
-            People and entities behind your saved properties, and their known contacts.
+            Principals, PTA leads, and wellness coordinators at your saved schools, and their known contacts.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -153,7 +153,7 @@ function OwnersPage() {
             onClick={() => exportContacts(Array.from(selected))}
             disabled={exporting || selected.size === 0}
             className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-xs hover:bg-white/5 disabled:opacity-50"
-            title="Download verified phone & email contacts for the selected owners"
+            title="Download verified phone & email contacts for the selected staff"
           >
             {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5 text-cyan" />}
             Export CSV ({selected.size})
@@ -166,7 +166,7 @@ function OwnersPage() {
       {!isLoading && ownerList.length === 0 && (
         <div className="border border-border rounded-lg p-10 text-center">
           <Users className="mx-auto h-8 w-8 text-[var(--w55)]" />
-          <p className="mt-3 text-sm text-[var(--w55)]">No owners yet. Save a property to seed this list.</p>
+          <p className="mt-3 text-sm text-[var(--w55)]">No staff yet. Save a school to seed this list.</p>
         </div>
       )}
 
@@ -181,13 +181,13 @@ function OwnersPage() {
                     checked={allSelected}
                     ref={(el) => { if (el) el.indeterminate = someSelected; }}
                     onChange={toggleAll}
-                    aria-label="Select all owners"
+                    aria-label="Select all staff"
                     className="accent-cyan"
                   />
                 </th>
                 <th className="p-4 w-8"></th>
-                <th className="p-4">Owner</th>
-                <th className="p-4">Property</th>
+                <th className="p-4">Staff</th>
+                <th className="p-4">School</th>
                 <th className="p-4">Mailing</th>
                 <th className="p-4">Contacts</th>
               </tr>

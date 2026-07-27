@@ -107,7 +107,7 @@ function ScoringPage() {
         <div className="surface p-6 text-[var(--w55)]">Loading…</div>
       ) : properties.length === 0 ? (
         <div className="surface p-6 text-[var(--w55)]">
-          No properties yet. Import some from the <Link to="/app/properties" className="underline">Properties</Link> page.
+          No schools yet. Import some from the <Link to="/app/schools" className="underline">Schools</Link> page.
         </div>
       ) : (
         <div className="surface divide-y divide-border">
@@ -117,8 +117,8 @@ function ScoringPage() {
               <div key={p.id} className="p-4 flex flex-wrap items-start gap-4">
                 <div className="flex-1 min-w-[200px]">
                   <Link
-                    to="/app/properties/$propertyId"
-                    params={{ propertyId: p.id }}
+                    to="/app/schools/$schoolId"
+                    params={{ schoolId: p.id }}
                     className="font-medium hover:underline"
                   >
                     {p.address}

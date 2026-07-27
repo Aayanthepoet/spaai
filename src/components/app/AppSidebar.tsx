@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
-  Building2,
+  School,
   Users,
   PhoneCall,
   ListChecks,
@@ -38,8 +38,8 @@ const items = [
   { key: "overview", url: "/app", icon: LayoutDashboard, exact: true },
   { key: "propaiAgent", url: "/app/agent", icon: Bot },
   { key: "leadScoring", url: "/app/scoring", icon: Flame },
-  { key: "properties", url: "/app/properties", icon: Building2 },
-  { key: "owners", url: "/app/owners", icon: Users },
+  { key: "schools", url: "/app/schools", icon: School },
+  { key: "staff", url: "/app/owners", icon: Users },
   { key: "contactsResolver", url: "/app/contacts", icon: PhoneCall },
   { key: "leadLists", url: "/app/lead-lists", icon: ListChecks },
   { key: "campaignsLanguage", url: "/app/campaigns", icon: Megaphone },

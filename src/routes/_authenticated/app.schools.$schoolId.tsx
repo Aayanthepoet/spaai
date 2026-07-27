@@ -17,14 +17,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { scoreProperty } from "@/lib/engines/scoring.functions";
 import { ArrowLeft, Flame, Home, RefreshCw } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/app/properties/$propertyId")({
-  head: () => ({ meta: [{ title: "Property detail — PropAI" }] }),
-  component: PropertyDetailPage,
+export const Route = createFileRoute("/_authenticated/app/schools/$schoolId")({
+  head: () => ({ meta: [{ title: "School detail — PropAI" }] }),
+  component: SchoolDetailPage,
   errorComponent: ({ error, reset }) => {
     const router = useRouter();
     return (
       <div className="p-6 space-y-3">
-        <h1 className="text-2xl font-bold">Couldn't load property</h1>
+        <h1 className="text-2xl font-bold">Couldn't load school</h1>
         <p className="text-sm text-[var(--w55)]">{error.message}</p>
         <button
           className="text-cyan text-sm"
@@ -33,19 +33,19 @@ export const Route = createFileRoute("/_authenticated/app/properties/$propertyId
       </div>
     );
   },
-  notFoundComponent: () => <div className="p-6">Property not found.</div>,
+  notFoundComponent: () => <div className="p-6">School not found.</div>,
 });
 
-function PropertyDetailPage() {
-  const { propertyId } = Route.useParams();
+function SchoolDetailPage() {
+  const { schoolId } = Route.useParams();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["property-detail", propertyId],
+    queryKey: ["school-detail", schoolId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("properties")
         .select("id, address, city, state, zip, county, lead_score, notes")
-        .eq("id", propertyId)
+        .eq("id", schoolId)
         .maybeSingle();
       if (error) throw error;
       return data;
@@ -54,12 +54,12 @@ function PropertyDetailPage() {
 
   if (isLoading) return <div className="text-[var(--w55)]">Loading…</div>;
   if (error) return <div className="text-red-400">{(error as Error).message}</div>;
-  if (!data) return <div className="p-6">Property not found.</div>;
+  if (!data) return <div className="p-6">School not found.</div>;
 
   return (
     <div className="space-y-6">
-      <Link to="/app/properties" className="inline-flex items-center gap-1 text-xs text-[var(--w55)] hover:text-white">
-        <ArrowLeft className="h-3 w-3" /> Back to properties
+      <Link to="/app/schools" className="inline-flex items-center gap-1 text-xs text-[var(--w55)] hover:text-white">
+        <ArrowLeft className="h-3 w-3" /> Back to schools
       </Link>
 
       <header className="space-y-2">
@@ -76,7 +76,7 @@ function PropertyDetailPage() {
       </div>
 
       <AiLeadScoreSection
-        propertyId={propertyId}
+        schoolId={schoolId}
         leadScore={data.lead_score ?? null}
         notes={data.notes ?? null}
       />
@@ -96,12 +96,13 @@ function parseScoreNotes(notes: string | null): { rationale: string | null; sign
 }
 
 function AiLeadScoreSection({
-  propertyId, leadScore, notes,
-}: { propertyId: string; leadScore: number | null; notes: string | null }) {
+  schoolId, leadScore, notes,
+}: { schoolId: string; leadScore: number | null; notes: string | null }) {
   const scoreFn = useServerFn(scoreProperty);
   const router = useRouter();
   const mut = useMutation({
-    mutationFn: () => scoreFn({ data: { property_id: propertyId } }),
+    // `property_id` is still the server-fn input key — renamed in 3E with the schema.
+    mutationFn: () => scoreFn({ data: { property_id: schoolId } }),
     onSuccess: () => router.invalidate(),
   });
   const live = mut.data ?? null;

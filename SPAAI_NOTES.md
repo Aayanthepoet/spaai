@@ -341,10 +341,98 @@ rather than bun's. Re-test after `bun install` before spending time on it.
 **Zero** new lint problems were introduced. The ~3831 `prettier/prettier` errors are
 repo-wide pre-existing formatting drift.
 
-### Step 3 — property → school rename: NOT STARTED
+### Step 3 — property → school rename: IN PROGRESS
 
-**Unblocked** — `tsc` is at the pre-existing baseline, so the rename can begin against a
-known-good tree. Everything under "Light adaptation" above belongs to this step, plus:
+The rename splits into four layers. Layers 1–2 are free-standing; layers 3–4 must land
+together, because every `.from("properties")` breaks the instant the table is renamed.
+
+| Layer | Surface | DB dependency |
+|---|---|---|
+| 1. Labels & nav copy | 5 locale files + `AppSidebar` + in-app headings | none |
+| 2. Routing | 3 route files, 14 typed links, `routeTree.gen.ts` | none |
+| 3. Application code | `.from("properties")` ×10, `property_id`, CSV mapping | hard |
+| 4. Schema | rename + column add/drop, `types.ts` regen | is the dependency |
+
+Order: **3A** labels → **3B** routes → **3C** write migration → **3D** apply it + regen
+types → **3E** flip the code (same session as 3D) → **3F** prompts + school detail page →
+**3G** drop the cut tables.
+
+#### 3D is a hard handoff — it cannot be done from this machine
+
+No `supabase` CLI is installed, and `.env` carries only the publishable/anon key — no
+service-role key, no DB password, no access token. Applying migrations and regenerating
+`src/integrations/supabase/types.ts` has to happen via Lovable or the Supabase dashboard.
+Everything through 3C is safe to land solo.
+
+#### Found during survey, not covered above
+
+- **`social_posts.property_id` is live in a kept module.** The notes flag
+  `social-public.functions.ts:66`, but `social.functions.ts:40,50,96,131,272` and
+  `app.social.compose.tsx` (20 refs) implement attaching a property to a social post.
+  Repoint at `schools` or cut the attach feature — **decide before 3E.**
+- **`owners` → `school_staff` has a far bigger blast radius than `properties` → `schools`,**
+  because `owner_id` is a FK column on `contacts` *and* `outreach_messages` — i.e. it runs
+  straight through `sendOutreach`. Recommend renaming the table but keeping the `owner_id`
+  column names initially, and doing it as a separate pass after `properties` → `schools`
+  is green.
+- **Do not blind find/replace `propert`.** 15 hits are `CSSProperties` and `og:property`
+  meta attributes. Separately, the `property` references in `privacy.tsx`, `terms.tsx`,
+  and `auth.tsx` are SMS-consent language with TCPA weight — that copy must match what
+  campaigns actually send, so it is a deliberate rewrite, not a rename.
+
+#### 3A — labels & nav copy: DONE
+
+10 files, 34 lines. `tsc` unchanged at **1 error** (the documented pre-existing
+`DashboardAnalyticsWidget.tsx(94,11)`), so zero new errors.
+
+- `sidebar.properties` → `sidebar.schools`, `sidebar.owners` → `sidebar.staff`, translated
+  across all 5 locales. Key parity verified programmatically; no orphaned `t()` lookups.
+- `AppSidebar.tsx` — keys updated, `Building2` icon → `School`.
+- `app.index.tsx` — tile labels and `tileLabel` values.
+- `app.properties.index.tsx`, `app.owners.tsx`, `app.scoring.tsx` — headings, eyebrows,
+  document titles, empty states, table headers, aria-labels.
+
+Deliberately **not** touched in 3A, to avoid churn against later steps:
+- **`tiles[].table` in `app.index.tsx` still reads `"properties"` / `"owners"`** — those are
+  live DB table names typed against `types.ts`, not labels. They change in 3E.
+- **The Add Property dialog's field labels and the table column headers** in
+  the schools index — they track columns being dropped in 3C, so they get rewritten
+  in 3E rather than renamed twice.
+- **`sidebar.propaiAgent` and the `— PropAI` document-title suffixes** — brand strings,
+  a separate pass.
+
+#### 3B — route rename: DONE
+
+`/app/properties` → `/app/schools`, `$propertyId` → `$schoolId`. `tsc` back to the same
+**1 pre-existing error**. Because TanStack typed links are compile-checked, a stale `to=`
+would have failed the typecheck — so that clean run is real coverage, not just absence of
+evidence.
+
+- Renamed via `git mv`, so history is preserved (all four show as `R` in git status):
+  `app.properties.tsx` → `app.schools.tsx`, `app.properties.index.tsx` →
+  `app.schools.index.tsx`, `app.properties.$propertyId.tsx` → `app.schools.$schoolId.tsx`,
+  and `src/components/properties/` → `src/components/schools/`.
+- `createFileRoute` paths, `Route.useParams()`, the `AiLeadScoreSection` prop, the back-link,
+  and both document titles updated. Component renamed `PropertyDetailPage` → `SchoolDetailPage`.
+- Link call sites repointed in `AppSidebar.tsx`, `app.index.tsx`, `app.scoring.tsx`, and the
+  schools index (`navigate` + `Link`).
+- `routeTree.gen.ts` regenerated: **0** stale `properties`/`propertyId` refs, 34 `schools`
+  refs. Regenerated by `npx vite build` — the TanStack plugin emits the route tree before
+  the build hits the pre-existing `css content for "" was not found` failure, which is
+  unchanged and unrelated.
+
+Still property-named after 3B, by design:
+- **`/app/owners` was not renamed.** It has no DB coupling, so `/app/staff` can happen any
+  time — it was simply out of 3B's scope.
+- **`app.social.compose.tsx`'s `propertyId`** is local state for the social-post attach
+  feature, not a route param. It waits on the social coupling decision in 3E.
+- `.from("properties")`, `queryKey: ["properties"]`, and the `property_id` input key on
+  `scoreProperty` — all 3E. The `property_id` call site in `app.schools.$schoolId.tsx`
+  carries an inline comment saying so.
+
+#### Remaining in step 3
+
+Everything under "Light adaptation" above, plus:
 
 - Rebuild the real school detail page in place of the `app.properties.$propertyId.tsx` stub.
 - Retarget `scoring.functions.ts`'s SYSTEM_PROMPT from seller motivation to booking

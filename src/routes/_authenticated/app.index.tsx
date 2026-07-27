@@ -15,8 +15,8 @@ export const Route = createFileRoute("/_authenticated/app/")({
 });
 
 const tiles = [
-  { name: "Properties", to: "/app/properties", table: "properties" as const, color: "var(--cyan)" },
-  { name: "Owners", to: "/app/owners", table: "owners" as const, color: "var(--gold)" },
+  { name: "Schools", to: "/app/schools", table: "properties" as const, color: "var(--cyan)" },
+  { name: "School Staff", to: "/app/owners", table: "owners" as const, color: "var(--gold)" },
   { name: "Contacts", to: "/app/contacts", table: "contacts" as const, color: "var(--violet)" },
   { name: "Lead Lists", to: "/app/lead-lists", table: "lead_lists" as const, color: "var(--green)" },
   { name: "Campaigns", to: "/app/campaigns", table: "campaigns" as const, color: "var(--cyan)" },
@@ -41,8 +41,8 @@ function Overview() {
   });
 
   const tileLabel: Record<string, string> = {
-    properties: t("sidebar.properties"),
-    owners: t("sidebar.owners"),
+    properties: t("sidebar.schools"),
+    owners: t("sidebar.staff"),
     contacts: t("sidebar.contactsResolver"),
     lead_lists: t("sidebar.leadLists"),
     campaigns: t("sidebar.campaignsLanguage"),
