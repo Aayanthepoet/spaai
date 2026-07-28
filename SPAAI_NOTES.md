@@ -3,15 +3,33 @@
 Converting this repo from **PropAI** (real-estate intelligence platform) to **SpaAI**, a
 school-outreach SaaS for a mobile spa business.
 
-Status: **CUT executed. Rewiring in progress. No schema changes yet.**
+Status: **Cut executed. Labels + routes renamed and committed (`d500a22`). Schema work
+pivoted to Path C — see [Step 3C](#step-3c--pivot-the-database-is-empty).**
 See the [Execution log](#execution-log) at the bottom for exactly where things stand.
 
-Core principle: the existing `contacts` / `campaigns` / `outreach_messages` / compliance
-stack is reused, not rebuilt. Migration files written against an empty database were
-discarded, because this database already has ~45 tables and a working compliance layer.
+> ### ⚠️ The original core principle was WRONG — corrected 2026-07-27
+>
+> This document was written on the premise that *"this database already has ~45 tables and
+> a working compliance layer,"* and therefore that the stack should be **adapted in place,
+> not rebuilt**. A pre-flight query against the spaai Supabase project
+> (`ztmusqeymuehrzlfbfuh`) returned **zero tables in `public`**. The database is empty; the
+> 66 migrations in this repo were never applied to it.
+>
+> That premise described a *different* database. Everything below that assumes live tables,
+> live data, or a working app is describing the old PropAI project, not this one.
+>
+> **Adapt-in-place is therefore replaced by: build one clean baseline from the good parts.**
+> Concretely — nothing is renamed, because nothing exists yet to rename. See Step 3C.
 
-The domain chain `properties → owners → contacts → outreach_messages` becomes
-`schools → school_staff → contacts → outreach_messages`. Same shape, two renames.
+Core principle (revised): the existing `contacts` / `campaigns` / `outreach_messages` /
+compliance SQL is **reused verbatim, but re-emitted under SpaAI names in a single
+consolidated baseline** rather than created-then-renamed. The value is in the SQL itself —
+the DNC guard, the quiet-hours gate, the phone-suppression check, the pgmq email queue —
+and that SQL is copied, never retyped.
+
+The domain chain is `schools → school_staff → contacts → outreach_messages`. Under Path C
+it is authored that way from the start; there is no `properties → owners` intermediate
+state in the database.
 
 ---
 
@@ -430,20 +448,85 @@ Still property-named after 3B, by design:
   `scoreProperty` — all 3E. The `property_id` call site in `app.schools.$schoolId.tsx`
   carries an inline comment saying so.
 
-#### Remaining in step 3
+### Step 3C — PIVOT: the database is empty
 
-Everything under "Light adaptation" above, plus:
+**The finding.** The 3C pre-flight (a read-only introspection query, run before any DDL)
+returned **zero tables in `public`** on the spaai Supabase project. The 66 migration files
+in this repo have never been applied to it. Nothing exists to rename, and no application
+has ever successfully talked to this database.
 
-- Rebuild the real school detail page in place of the `app.properties.$propertyId.tsx` stub.
-- Retarget `scoring.functions.ts`'s SYSTEM_PROMPT from seller motivation to booking
-  likelihood, and the tier copy in `AiLeadScoreSection`.
-- Drop the `skip_trace_status` / `skip_trace_last_run_at` columns and remove them from
-  `listOwners`; nothing writes them anymore.
-- Drop the cut tables (`leads`, `lead_notes`, `lead_emails`, `lead_assignments`, auctions,
-  bids, comps, contracts, vision, title_searches, …) — the code referencing them is gone,
-  so rule 1 is satisfied and the drop migration is safe to write.
-- Regenerate `src/integrations/supabase/types.ts` after any migration, including the
-  already-written `inquiries` table.
+**Consequence: skip the rename entirely.** A rename migration only makes sense against a
+schema that exists. The correct move on an empty database is to author the target schema
+directly. Adopted approach — **Path C, consolidated baseline**:
+
+> Fold the 66 existing migrations into a single `initial_schema.sql`, keeping only the
+> surviving objects and applying every rename **at authoring time**, so tables are born as
+> `schools` and `school_staff`. Valuable SQL is copied verbatim, never retyped.
+
+Two alternatives were considered and rejected:
+
+- **Replay all 66 migrations, then rename on top.** Zero authoring risk, but it creates
+  ~18 tables and two enums purely to destroy them minutes later, and several migrations
+  would stumble on a fresh project — `CREATE EXTENSION pg_cron`, the vault seeding, and the
+  `cron.schedule` calls all reference project-specific secrets that do not exist yet.
+- **Author a fresh schema from scratch.** Cleanest end state, worst risk profile: it means
+  hand-rewriting `normalize_phone` / `is_phone_suppressed` / `is_in_quiet_hours` and the
+  pgmq email queue — i.e. retyping the TCPA/CAN-SPAM gates. Do not retype the compliance
+  layer. Copy it.
+
+**Why Path C is verifiable, which is the main reason it beats writing from scratch.**
+`src/integrations/supabase/types.ts` was generated from the old PropAI database — a schema
+that demonstrably worked. It is an independent oracle: diff the folded baseline's column
+inventory against it, per table, to catch any `ALTER TABLE ADD COLUMN` that failed to fold
+into its original `CREATE TABLE`. It does **not** cover policies, functions, triggers,
+indexes, or grants — those come only from the migration files and still need careful review.
+
+#### Decisions taken 2026-07-27
+
+| Decision | Choice |
+|---|---|
+| `social_posts` property-attach feature | **OMIT.** Not carried into the baseline at all — no `school_id`, no attach UI. This closes the open item that had been blocking 3E. |
+| `watchlist_items`, `saved_searches` | **INCLUDE.** Both are generic and cheap; a fresh baseline forces the call rather than deferring it. |
+| The 66 existing migrations | **ARCHIVE** under `supabase/migrations/_propai_archive/`. Kept on disk for reference; git history preserves them regardless. |
+| `owners` → `school_staff` | **Done at authoring time.** The earlier caution was about migration blast radius through `sendOutreach`; on an empty database that evaporates, so `owner_id` → `staff_id` becomes a pure code rename with no DDL risk. |
+
+#### What the pivot deletes from the plan
+
+- **The 3C rename migration is gone.** `20260727120000_rename_properties_to_schools.sql`
+  was written, reviewed, never applied, and deleted. It renamed a table that will never
+  exist. It was untracked, so git has nothing to revert.
+- **3G (drop the cut tables) is obsolete** — never create what you would drop.
+- **Execution rule 1 ("delete code before dropping tables") is moot**, along with the
+  expand/contract question and the whole breakage-window concern. There is no data and no
+  working app to protect.
+- **The `inquiries` migration** (`20260726120000_inquiries.sql`) folds into the baseline
+  rather than standing alone.
+
+#### Revised remaining steps
+
+- **3C′** — Author the consolidated SpaAI baseline. Fold in `inquiries`. Move the 66 old
+  files to `_propai_archive/`. **Not started — this is where the next session begins.**
+- **3D′** — Diff the baseline's columns against `types.ts`; apply via the Supabase
+  dashboard; regenerate `types.ts`.
+- **3E′** — Flip the code to `schools` / `school_staff` (`.from()`, `property_id`,
+  `owner_id` → `staff_id`, `queryKey`s, `tiles[].table`), plus the CSV `TARGET_FIELDS`
+  rewrite in `src/lib/csv/mapping.ts`.
+- **3F** — Unchanged: retarget `scoring.functions.ts`'s SYSTEM_PROMPT from seller motivation
+  to booking likelihood, the tier copy in `AiLeadScoreSection`, the contacts-resolver
+  prompt, and rebuild the school detail page over the `app.schools.$schoolId.tsx` stub.
+- **NEW — fresh-project deploy checklist.** This work did not exist under the old plan:
+  the 4 extensions (`pg_cron`, `pg_net`, `pgmq`, `supabase_vault`), the `cron.schedule`
+  jobs, the pgmq queues, and the vault secrets all need seeding on a virgin project.
+
+#### Still to verify at the start of the next session
+
+- **Which mechanism was ever meant to apply migrations here?** 66 files exist and none
+  landed. Either this is a brand-new project that was never connected, or Lovable applies
+  migrations on sync and has never run against it. This decides whether archiving the 66
+  files is safe or whether Lovable will attempt to re-apply them.
+- **Does an old PropAI database still stand, and does it hold anything wanted?** Assumed
+  no — it is real-estate data — but `types.ts` came from it, which is what makes it usable
+  as the schema oracle above.
 
 ### Environment notes
 
