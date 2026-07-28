@@ -541,3 +541,9 @@ indexes, or grants — those come only from the migration files and still need c
   references. It is auto-generated — never hand-edit it.
 - **Nothing is committed.** The tree does not build in this state. Per `AGENTS.md`, commits
   sync to Lovable and the branch should stay working — do not push until step 2 finishes.
+
+## 2026-07-28 — Lovable/Supabase sync: ANSWERED
+Supabase project wdqkvrlgtbbshjjnvvhj shows 'No repository connected' and 'No migrations'.
+Lovable does NOT apply migrations on sync. Nothing in supabase/migrations/ has ever run.
+Schema changes must be applied deliberately. Baseline migration is safe to author.
+Next: capture the actual current schema before writing the baseline.
